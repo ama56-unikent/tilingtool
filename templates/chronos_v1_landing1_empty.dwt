@@ -1,0 +1,96 @@
+<?php require 'templates/pantheon-dev/template.loader.php' ?><!DOCTYPE html>
+<html>
+	<!-- TEMPLATE_VERSION="Chronos v1.0" -->
+	<head>
+		<!-- TemplateBeginEditable name='doctitle' -->
+		<title></title>
+		<!-- TemplateEndEditable -->
+		<kentIncludeMeta>
+		<!-- TemplateBeginEditable name="metadata" -->
+			<!--<meta name="keywords" content="" />-->
+			<!--<meta name="description" content="" />-->
+		<!-- TemplateEndEditable -->
+		</kentIncludeMeta>
+		<kentIncludeCSS />
+		<link rel='stylesheet' media='all' type='text/css' href='landing-pages/styles/local.css'/>
+		<kentHideInBrowser>
+			<!--#include virtual="Templates/dreamweaver-styles.shtml" -->
+			<!--#include virtual="/Templates/dreamweaver-styles.shtml" -->
+		</kentHideInBrowser>
+		<kentIncludeJavascript />
+		<!-- TemplateBeginEditable name="head" -->
+
+		<!-- TemplateEndEditable -->
+	</head>
+	
+	<body>
+		<kentPage>
+			<kentPageHeader>
+				<kentGlobalHeader/>
+				<kentDepartmentHeader/>
+			</kentPageHeader>
+			
+			<kentPageBodyFull>
+                <kentUtilityBar/>
+                <kentPageContent>
+					<div id="business-index">
+						<div class='container_4'>
+							<div class='grid_1 alpha'>
+								<!-- TemplateBeginEditable name="Grid_1" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- TemplateEndEditable -->
+							</div>
+							<div class='grid_1'>
+								<!-- TemplateBeginEditable name="Grid_2" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- TemplateEndEditable -->
+							</div>
+							<div class='grid_2 omega'>
+								<!-- TemplateBeginEditable name="Grid_3" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/Landing-double-cell.jpg"/>
+								<!-- TemplateEndEditable -->
+							</div>
+
+							<div class='clear'></div>
+
+							<div class='grid_1 alpha'>
+								<!-- TemplateBeginEditable name="Grid_4" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- TemplateEndEditable -->
+							</div>
+							<div class='grid_1'>
+								<!-- TemplateBeginEditable name="Grid_5" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- TemplateEndEditable -->
+							</div>
+							<div class='grid_1'>
+								<!-- TemplateBeginEditable name="Grid_6" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- TemplateEndEditable -->
+							</div>
+							<div class='grid_1 omega'>
+								<!-- TemplateBeginEditable name="Grid_7" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- TemplateEndEditable -->
+							</div>
+						</div>
+						<div class='clear'></div>
+						<br/>
+					</div>
+                </kentPageContent>
+			</kentPageBodyFull>
+			
+			<kentPageFooter>
+				<kentDepartmentFooter/>
+				<kentGlobalFooter/>
+			</kentPageFooter>
+		</kentPage>
+	</body>
+</html>

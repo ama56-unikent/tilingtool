@@ -1,0 +1,117 @@
+<?php require 'templates/pantheon-dev/template.loader.php' ?><!DOCTYPE html>
+<html>
+	<!-- TEMPLATE_VERSION="Chronos v1.0" -->
+	<head>
+		<!-- TemplateBeginEditable name='doctitle' -->
+		<title></title>
+		<!-- TemplateEndEditable -->
+		<kentIncludeMeta>
+		<!-- TemplateBeginEditable name="metadata" -->
+			<!--<meta name="keywords" content="" />-->
+			<!--<meta name="description" content="" />-->
+		<!-- TemplateEndEditable -->
+		</kentIncludeMeta>
+		<kentIncludeCSS />
+		<link rel='stylesheet' media='all' type='text/css' href='styles/local.css'/>
+		<kentHideInBrowser>
+			<!--#include virtual="Templates/dreamweaver-styles.shtml" -->
+			<!--#include virtual="/Templates/dreamweaver-styles.shtml" -->
+		</kentHideInBrowser>
+		<kentIncludeJavascript />
+		<!-- TemplateBeginEditable name="head" -->
+
+		<!-- TemplateEndEditable -->
+	</head>
+	
+	<body>
+		<kentPage>
+			<kentPageHeader>
+				<kentGlobalHeader/>
+				<kentDepartmentHeader/>
+			</kentPageHeader>
+			
+			<kentPageBody>
+				<kentPageBodyLeft>
+					<kentMenuGenerator name='left' maxDepth='3'>
+						<!-- TemplateBeginEditable name="menuParameters" -->
+						<param:menuGenerator name='buildAllMenus' value='true' />
+						<param:menuGenerator name='forceMenuHighlight' value='' />
+						<!-- TemplateEndEditable -->
+					</kentMenuGenerator>
+				</kentPageBodyLeft>
+				<kentPageBodyRight>
+					<kentUtilityBar/>
+					<kentPageContent>
+						<div class="container_3">
+							<div class="grid_2 alpha">
+								<!-- InstanceBeginEditable name="Grid_1" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/index-main-cell.jpg"/>
+								<!-- InstanceEndEditable -->
+							</div>
+							<div class="grid_1 omega">
+								<!-- InstanceBeginEditable name="Grid_2" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- InstanceEndEditable -->
+							</div>
+
+							<div class="clear"></div>
+							<br/>
+
+							<div class="grid_1 alpha">
+								<!-- InstanceBeginEditable name="Grid_3" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- InstanceEndEditable -->
+							</div>
+							<div class="grid_1">
+								<!-- InstanceBeginEditable name="Grid_4" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- InstanceEndEditable -->
+							</div>
+							<div class="grid_1 omega">
+								<!-- InstanceBeginEditable name="Grid_5" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- InstanceEndEditable -->
+								<div class="clear">&nbsp;</div>
+							</div>
+
+							<div class="clear"></div>
+							<br/>
+
+							<div class="grid_1 alpha">
+								<!-- InstanceBeginEditable name="Grid_3" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- InstanceEndEditable -->
+							</div>
+							<div class="grid_1">
+								<!-- InstanceBeginEditable name="Grid_4" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- InstanceEndEditable -->
+							</div>
+							<div class="grid_1 omega">
+								<!-- InstanceBeginEditable name="Grid_5" -->
+								<p class="hideInBrowser">&nbsp;</p>
+								<img src="http://static.kent.ac.uk/pantheon/images/Chronos/layout/grid-1.jpg"/>
+								<!-- InstanceEndEditable -->
+								<div class="clear">&nbsp;</div>
+							</div>
+						</div>
+						<div class="clear"></div>
+						<br/>
+					</kentPageContent> 
+				</kentPageBodyRight>
+			</kentPageBody>
+			
+			<kentPageFooter>
+				<kentDepartmentFooter/>
+				<kentGlobalFooter/>
+			</kentPageFooter>
+		</kentPage>
+	</body>
+</html>

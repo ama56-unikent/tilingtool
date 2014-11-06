@@ -1,0 +1,63 @@
+<?php require 'templates/pantheon-dev/template.loader.php' ?><!DOCTYPE html>
+<html>
+	<!-- TEMPLATE_VERSION="Chronos v1.0" -->
+	<head>
+		<!-- TemplateBeginEditable name='doctitle' -->
+		<title></title>
+		<!-- TemplateEndEditable -->
+		<kentIncludeMeta>
+		<!-- TemplateBeginEditable name="metadata" -->
+			<!--<meta name="keywords" content="" />-->
+			<!--<meta name="description" content="" />-->
+		<!-- TemplateEndEditable -->
+		</kentIncludeMeta>
+		<kentIncludeCSS />
+		<link rel='stylesheet' media='all' type='text/css' href='styles/local.css'/>
+		<kentHideInBrowser>
+			<!--#include virtual="Templates/dreamweaver-styles.shtml" -->
+			<!--#include virtual="/Templates/dreamweaver-styles.shtml" -->
+		</kentHideInBrowser>
+		<kentIncludeJavascript />
+		<!-- TemplateBeginEditable name="head" -->
+
+		<!-- TemplateEndEditable -->
+	</head>
+	
+	<body>
+		<kentPage>
+			<kentPageHeader>
+				<kentGlobalHeader/>
+				<kentDepartmentHeader/>
+			</kentPageHeader>
+			
+			<kentPageBody>
+				<kentPageBodyLeft>
+					<kentMenuGenerator name='left' maxDepth='3'>
+						<!-- TemplateBeginEditable name="menuParameters" -->
+						<param:menuGenerator name='buildAllMenus' value='true' />
+						<param:menuGenerator name='forceMenuHighlight' value='' />
+						<!-- TemplateEndEditable -->
+					</kentMenuGenerator>
+				</kentPageBodyLeft>
+				<kentPageBodyRight>
+					<kentUtilityBar/>
+					<kentPageContent>
+						<!-- TemplateBeginEditable name="content" -->
+						<h1>Lorem ipsum dolor</h1>
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a nisi in nunc sagittis scelerisque. Aliquam erat volutpat. Nam vehicula accumsan mollis. In non erat lorem, accumsan pellentesque justo. Quisque a dolor eget enim tincidunt tempor sit amet in urna. Aliquam nec enim orci. Vivamus in eros est. Aliquam nec tortor nisi. Phasellus convallis interdum molestie. Curabitur eros tellus, blandit id molestie a, tempor vitae dui. Aliquam a nunc tortor, nec porttitor orci. Quisque congue dapibus diam, sed congue velit aliquet nec. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+
+						  <h2>Heading</h2>
+						  
+						  <p>Donec id sapien et magna egestas sollicitudin et a odio. Praesent tincidunt, purus vitae bibendum vulputate, mauris purus commodo turpis, eu gravida massa mi id nibh. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan libero non eros fermentum vitae facilisis metus porta. In tempor tellus ac diam rutrum malesuada. Sed vitae velit eget est dictum pharetra eu sit amet sapien. Duis nulla sem, malesuada vel molestie a, placerat non nisl. Duis fermentum urna et arcu fermentum venenatis. Morbi vulputate sapien quis lectus pharetra a malesuada felis cursus. In aliquet viverra nibh non lacinia.</p>
+						<!-- TemplateEndEditable -->
+					</kentPageContent>
+				</kentPageBodyRight>
+			</kentPageBody>
+			
+			<kentPageFooter>
+				<kentDepartmentFooter/>
+				<kentGlobalFooter/>
+			</kentPageFooter>
+		</kentPage>
+	</body>
+</html>

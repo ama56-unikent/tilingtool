@@ -1,0 +1,27 @@
+div#content div.tilingtool.canvas {
+	display: block;
+	background-color: #2E2E2E;
+	width: 100%;
+}
+
+div#content div.tilingtool.canvas .row-fluid {
+	height: 100px;
+	background-color: #E54F2A;
+}
+
+div#content form.tilingtool.paramgen {
+	margin-bottom: 1%;
+}
+
+div#content form.tilingtool.paramgen label {
+	display: inline-block;
+	margin-right: 1%;
+}
+
+div#content form.tilingtool.paramgen input[type="button"]{
+	padding: 1%;
+}
+
+.selected {
+	background: repeating-linear-gradient( -55deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px );
+}
