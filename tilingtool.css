@@ -29,10 +29,10 @@ div.tilingtool.canvas {
 		position: absolute;
 		display: block;
 		background-color: rgb(0,255,255);
-	    -webkit-background-clip: padding-box; /* for Safari */
-	    background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
-	    margin: 0;
-	    padding: 0;
+		-webkit-background-clip: padding-box; /* for Safari */
+		background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
+		margin: 0;
+		padding: 0;
 	}
 
 	div.tilingtool.canvas div.crosshairs.horizontal {
@@ -40,16 +40,16 @@ div.tilingtool.canvas {
 		top: 50%;
 		width: 100%;
 		height: 1px;
-	    border-top: 4.523px solid rgba(0,255,255,0.5);
-	    border-bottom: 4.523px solid rgba(0,255,255,0.5);
-	    z-index: 1000;
+		border-top: 4.523px solid rgba(0,255,255,0.5);
+		border-bottom: 4.523px solid rgba(0,255,255,0.5);
+		z-index: 1000;
 	}
 
 		div.tilingtool.canvas div.crosshairs.horizontal.active {
 			background-color: rgb(255,0,0);
-		    border-top: 4.523px solid rgba(255,0,0,0.5);
-		    border-bottom: 4.523px solid rgba(255,0,0,0.5);
-		    z-index: 1001;
+			border-top: 4.523px solid rgba(255,0,0,0.5);
+			border-bottom: 4.523px solid rgba(255,0,0,0.5);
+			z-index: 1001;
 		}
 
 	div.tilingtool.canvas div.crosshairs.vertical {
@@ -57,16 +57,16 @@ div.tilingtool.canvas {
 		top: 0;
 		width: 1px;
 		height: 100%;
-	    border-left: 4.523px solid rgba(0,255,255,0.5);
-	    border-right: 4.523px solid rgba(0,255,255,0.5);
-	    z-index: 1000;
+		border-left: 4.523px solid rgba(0,255,255,0.5);
+		border-right: 4.523px solid rgba(0,255,255,0.5);
+		z-index: 1000;
 	}
 
 		div.tilingtool.canvas div.crosshairs.vertical.active {
-		    background-color: rgb(255,0,0);
-		    border-left: 4.523px solid rgba(255,0,0,0.5);
-		    border-right: 4.523px solid rgba(255,0,0,0.5);
-		    z-index: 1001;
+			background-color: rgb(255,0,0);
+			border-left: 4.523px solid rgba(255,0,0,0.5);
+			border-right: 4.523px solid rgba(255,0,0,0.5);
+			z-index: 1001;
 		}
 
 	div.tilingtool.canvas div.cut {
