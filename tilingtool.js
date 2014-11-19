@@ -2,7 +2,11 @@ function TilingTool(){
 
 	var $canvas = $("div.tilingtool.canvas"),
 		$paramGen = $("form.tilingtool.paramgen"),
-		currentlySelected = null;
+		$horizCrosshairsLeg = $canvas.find("div.crosshairs.horizontal"),
+		$vertCrosshairsLeg = $canvas.find("div.crosshairs.vertical"),
+		$horizCutTemplate = $("<div class='cut horizontal'>"),
+		$vertCutTemplate = $("<div class='cut vertical'>"),
+		currentSliceMode = 0;
 
 	init();
 
@@ -29,26 +33,29 @@ function TilingTool(){
 			paramAction($(this).attr("name"),$(this).val());
 		});
 
-		$(".selectable").click(function(event){
-			event.stopPropagation();
-			console.log(event.target);
-			setSelected(event.target);
-		});
-	}
+		$canvas.mousemove(followMouse);
 
-	function setSelected(selectMe){
-		if(selectMe && selectMe===currentlySelected)
-			return;
+		Mousetrap.bind("v",function(){
+			$vertCrosshairsLeg.addClass("active");
+			currentSliceMode |= TilingTool.SLICE_MODE.VERT;
+		},"keydown");
 
-		if(currentlySelected)
-			$(currentlySelected).removeClass("selected");
+		Mousetrap.bind("v",function(){
+			$vertCrosshairsLeg.removeClass("active");
+			currentSliceMode &= ~TilingTool.SLICE_MODE.VERT;
+		},"keyup");
 
-		if(selectMe){
-			$(selectMe).addClass("selected");
-			currentlySelected = selectMe;
-		}
-		else
-			currentlySelected = null;
+		Mousetrap.bind("h",function(){
+			$horizCrosshairsLeg.addClass("active");
+			currentSliceMode |= TilingTool.SLICE_MODE.HORIZ;
+		},"keydown");
+
+		Mousetrap.bind("h",function(){
+			$horizCrosshairsLeg.removeClass("active");
+			currentSliceMode &= ~TilingTool.SLICE_MODE.HORIZ;
+		},"keyup");
+
+		$canvas.click(detectSliceMode);
 	}
 
 	function paramAction(name, value){
@@ -56,19 +63,54 @@ function TilingTool(){
 			case "canvas-height":
 				$canvas.css({height: value});
 				break;
-			case "add-row":
-				addRow();
-				break;
-			case "deselect-all":
-				setSelected();
-				break;
 		}
 	}
 
-	function addRow(){		
-		if(currentlySelected){
-			var $fluidRow = $("<div class='row-fluid selectable'>");
-			$(currentlySelected).append($fluidRow);
-		}
+	function followMouse(event){
+		event.stopPropagation();
+
+		var offset = $canvas.offset(),
+			xLimit = $canvas.innerWidth() - TilingTool.CROSSHAIRS_THICKNESS,
+			yLimit = $canvas.innerHeight() - TilingTool.CROSSHAIRS_THICKNESS,
+			normalizationFactor = (TilingTool.CROSSHAIRS_THICKNESS-1)/2;
+			newX = event.pageX - offset.left - normalizationFactor,
+			newY = event.pageY - offset.top - normalizationFactor;
+
+		if(newX<0)
+			newX = 0;
+		else if(newX>xLimit)
+			newX = xLimit;
+
+		if(newY<0)
+			newY = 0;
+		else if(newY>yLimit)
+			newY = yLimit;
+
+		$horizCrosshairsLeg.css({top: newY});
+		$vertCrosshairsLeg.css({left:newX});
+	}
+
+	function detectSliceMode(event){
+		event.stopPropagation();
+
+		if((TilingTool.SLICE_MODE.HORIZ & currentSliceMode) === 
+			TilingTool.SLICE_MODE.HORIZ)
+			slice($horizCrosshairsLeg, $horizCutTemplate);
+
+		if((TilingTool.SLICE_MODE.VERT & currentSliceMode) === 
+			TilingTool.SLICE_MODE.VERT)
+			slice($vertCrosshairsLeg, $vertCutTemplate);	
+	}
+
+	function slice($source, $cut){
+		$cut.clone().css({
+			top: $source.css("top"),
+			left: $source.css("left")
+		}).appendTo($canvas);
 	}
 }
+
+TilingTool.CROSSHAIRS_THICKNESS = 9.047;
+TilingTool.SLICE_MODE = {HORIZ: 1,
+	VERT: 2
+};

@@ -1,70 +1,24 @@
-﻿<?php require 'templates/pantheon-dev/template.loader.php' ?><!DOCTYPE html>
-<html><!-- InstanceBegin template="/Templates/chronos_v1.dwt" codeOutsideHTMLIsLocked="false" -->
-	<!-- TEMPLATE_VERSION="Chronos v1.0" -->
+﻿<!DOCTYPE html>
+<html>
 	<head>
-		<!-- InstanceBeginEditable name="doctitle" -->
-		<title></title>
-		<!-- InstanceEndEditable -->
-		<kentIncludeMeta>
-		<!-- InstanceBeginEditable name="metadata" -->
-			<!--<meta name="keywords" content="" />-->
-			<!--<meta name="description" content="" />-->
-		<!-- InstanceEndEditable -->
-		</kentIncludeMeta>
-		<kentIncludeCSS />
+		<title>Tiling Tool</title>
 		<link rel='stylesheet' media='all' type='text/css' href='tilingtool.css'/>
-		<kentHideInBrowser>
-			<!--#include virtual="Templates/dreamweaver-styles.shtml" -->
-			<!--#include virtual="/Templates/dreamweaver-styles.shtml" -->
-		</kentHideInBrowser>
-		<kentIncludeJavascript />
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="http://cdn.craig.is/js/mousetrap/mousetrap.min.js?9d308"></script>
 		<script src="tilingtool.js"></script>
-		<!-- InstanceBeginEditable name="head" -->
-
-		<!-- InstanceEndEditable -->
-	</head>
-	
+	</head>	
 	<body>
-		<kentPage>
-			<kentPageHeader>
-				<kentGlobalHeader/>
-				<kentDepartmentHeader/>
-			</kentPageHeader>
-			
-			<kentPageBody>
-				<kentPageBodyLeft>
-					<kentMenuGenerator name='left' maxDepth='3'>
-						<!-- InstanceBeginEditable name="menuParameters" -->
-						<param:menuGenerator name='buildAllMenus' value='true' />
-						<param:menuGenerator name='forceMenuHighlight' value='' />
-						<!-- InstanceEndEditable -->
-					</kentMenuGenerator>
-				</kentPageBodyLeft>
-				<kentPageBodyRight>
-					<kentUtilityBar/>
-					<kentPageContent>
-						<!-- InstanceBeginEditable name="content" -->
-						<form class="tilingtool paramgen">
-							<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
-							<input type="button" name="deselect-all" value="Deselect all">
-							<input type="button" name="add-row" value="Add row">
-						</form>
-						<div class="tilingtool canvas selectable">
-						</div>
-						<script>
-							$(document).ready(function () {
-								var tilingTool = new TilingTool();
-							});
-						</script>
-						<!-- InstanceEndEditable -->
-					</kentPageContent>
-				</kentPageBodyRight>
-			</kentPageBody>
-			
-			<kentPageFooter>
-				<kentDepartmentFooter/>
-				<kentGlobalFooter/>
-			</kentPageFooter>
-		</kentPage>
+		<form class="tilingtool paramgen">
+			<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
+		</form>
+		<div class="tilingtool canvas">
+			<div class="crosshairs horizontal"></div>
+			<div class="crosshairs vertical"></div>
+		</div>
+		<script>
+			$(document).ready(function () {
+				var tilingTool = new TilingTool();
+			});
+		</script>
 	</body>
-<!-- InstanceEnd --></html>
+</html>
