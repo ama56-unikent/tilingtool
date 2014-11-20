@@ -8,26 +8,31 @@
 		<script src="tilingtool.js"></script>
 	</head>	
 	<body>
-		<form class="tilingtool paramgen">
-			<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
-		</form>
-		<div class="tilingtool canvas">
-			<div class="tile initial"></div>
-			<div class="crosshairs horizontal">
-				<div class="left column"><div class="cell"></div></div>
-				<div class="middle column"><div class="cell"></div></div>
-				<div class="right column"><div class="cell"></div></div>
+		<div class="tilingtool">
+			<h1>Tiling Tool</h1>
+			<form class="paramgen">
+				<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
+			</form>
+			<div class="canvas">
+				<div class="horizontal ruler"></div>
+				<div class="vertical ruler"></div>
+				<div class="tile initial"></div>
+				<div class="crosshairs horizontal">
+					<div class="left column"><div class="cell"></div></div>
+					<div class="middle column"><div class="cell"></div></div>
+					<div class="right column"><div class="cell"></div></div>
+				</div>
+				<div class="crosshairs vertical">
+					<div class="top row"><div class="cell"></div></div>
+					<div class="middle row"><div class="cell"></div></div>
+					<div class="bottom row"><div class="cell"></div></div>
+				</div>
 			</div>
-			<div class="crosshairs vertical">
-				<div class="top row"><div class="cell"></div></div>
-				<div class="middle row"><div class="cell"></div></div>
-				<div class="bottom row"><div class="cell"></div></div>
-			</div>
+			<script>
+				$(document).ready(function () {
+					var tilingTool = new TilingTool();
+				});
+			</script>
 		</div>
-		<script>
-			$(document).ready(function () {
-				var tilingTool = new TilingTool();
-			});
-		</script>
 	</body>
 </html>

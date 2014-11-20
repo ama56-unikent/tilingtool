@@ -1,7 +1,11 @@
 function TilingTool(){
 
-	var $canvas = $("div.tilingtool.canvas"),
-		$paramGen = $("form.tilingtool.paramgen"),
+	var $tilingTool = $("div.tilingtool"),
+		$canvas = $tilingTool.find("div.canvas"),
+		$paramGen = $tilingTool.find("form.paramgen"),
+		$paramGenChildren = $paramGen.find(":input"),
+		$horizontalRuler = $canvas.find("div.ruler.horizontal"),
+		$verticalRuler = $canvas.find("div.ruler.vertical"),
 		$horizCrosshairsLeg = $canvas.find("div.crosshairs.horizontal"),
 		$horizCrosshairsLegLeft = $horizCrosshairsLeg.find("div.left"),
 		$horizCrosshairsLegMiddle = $horizCrosshairsLeg.find("div.middle"),
@@ -10,24 +14,70 @@ function TilingTool(){
 		$vertCrosshairsLegTop = $vertCrosshairsLeg.find("div.top"),
 		$vertCrosshairsLegMiddle = $vertCrosshairsLeg.find("div.middle"),
 		$vertCrosshairsLegBottom = $vertCrosshairsLeg.find("div.bottom"),
+		$markerTemplate = $("<div class='marker'>"),
+		$numberTemplate = $("<div class='number'>"),
 		$currentMouseElement = $canvas,
 		currentSliceMode = 0;
 
 	init();
 
 	function init(){
+		buildCanvas();
+		buildRulers();
 		listen();
 	}
 
-	function listen(){
-
-		$paramGen.submit(function(event){
-			event.preventDefault();
-		});
-		
-		var $paramGenChildren = $paramGen.find(":input").each(function(event){
+	function buildCanvas(){
+		$paramGenChildren.each(function(event){
 			if($(this).hasClass("autostart"))
 				paramAction($(this).attr("name"),$(this).val());
+		});
+	}
+
+	function buildRulers(){
+		buildHorizontalRuler();
+		buildVerticalRuler();
+
+		function buildVerticalRuler(){
+			var height = $canvas.height(),
+				step = 5,
+				top = 5;
+
+			while(top<height){
+				var $marker = $markerTemplate.clone().css({top:top});
+				var num = top/25;
+
+				if(Number.isInteger(num)){
+					if(isEven(num)){
+						$marker.addClass("large");
+						$marker.append($numberTemplate.clone().html(top));					
+					}
+					else if(isOdd(num))
+						$marker.addClass("medium");
+				}
+				else
+					$marker.addClass("small");
+
+				$marker.appendTo($verticalRuler);
+				top += step;
+			}
+
+			function isEven(x) { return (x%2)==0; }
+			function isOdd(x) { return !isEven(x); }
+		}
+
+		function buildHorizontalRuler(){
+			var left = TilingTool.COLUMN_UNIT;
+			for(var i=0; i<11; i++){
+				$markerTemplate.clone().css({left:left}).appendTo($horizontalRuler);
+				left += TilingTool.CROSSHAIRS_THICKNESS + TilingTool.COLUMN_UNIT;
+			}
+		}		
+	}
+
+	function listen(){
+		$paramGen.submit(function(event){
+			event.preventDefault();
 		});
 
 		$paramGenChildren.filter("input[type='text']").change(function(event){
@@ -314,6 +364,25 @@ function TilingTool(){
 }
 
 TilingTool.CROSSHAIRS_THICKNESS = 9.047;
+TilingTool.COLUMN_UNIT = 54.359;
 TilingTool.SLICE_MODE = {HORIZ: 1,
 	VERT: 2
 };
+
+/*\
+|*|
+|*|  :: Number.isInteger() polyfill ::
+|*|
+|*|  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+|*|
+\*/
+
+if (!Number.isInteger) {
+  Number.isInteger = function isInteger(nVal) {
+    return typeof nVal === 'number'
+      && isFinite(nVal)
+      && nVal > -9007199254740992
+      && nVal < 9007199254740992
+      && Math.floor(nVal) === nVal;
+  };
+}
