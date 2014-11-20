@@ -12,8 +12,17 @@
 			<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
 		</form>
 		<div class="tilingtool canvas">
-			<div class="crosshairs horizontal"></div>
-			<div class="crosshairs vertical"></div>
+			<div class="tile initial"></div>
+			<div class="crosshairs horizontal">
+				<div class="left"></div>
+				<div class="middle"></div>
+				<div class="right"></div>
+			</div>
+			<div class="crosshairs vertical">
+				<div class="top"></div>
+				<div class="middle"></div>
+				<div class="bottom"></div>
+			</div>
 		</div>
 		<script>
 			$(document).ready(function () {

@@ -19,71 +19,128 @@ form.tilingtool.paramgen {
 div.tilingtool.canvas {
 	position: relative;
 	display: block;
-	background-color: rgb(46,46,46);
+	background-color: white;
 	width: 752px;
 	margin: 0 auto;
 	overflow: hidden;
 }
+
+	div.tilingtool .tile {
+		position: absolute;
+		display: block;
+		background-color: rgb(46,46,46);
+		margin: 0;
+		padding: 0;
+		z-index: 1;
+	}
+
+	div.tilingtool .tile.initial {
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
 	
 	div.tilingtool.canvas div.crosshairs {
 		position: absolute;
 		display: block;
-		background-color: rgb(0,255,255);
-		-webkit-background-clip: padding-box; /* for Safari */
-		background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
 		margin: 0;
 		padding: 0;
+		pointer-events:none;
 	}
 
 	div.tilingtool.canvas div.crosshairs.horizontal {
 		left: 0;
 		top: 50%;
 		width: 100%;
-		height: 1px;
-		border-top: 4.523px solid rgba(0,255,255,0.5);
-		border-bottom: 4.523px solid rgba(0,255,255,0.5);
+		height: 9.047px;
 		z-index: 1000;
 	}
 
-		div.tilingtool.canvas div.crosshairs.horizontal.active {
+	div.tilingtool.canvas div.crosshairs.horizontal.active {
+		z-index: 1001;
+	}
+
+		div.tilingtool.canvas div.crosshairs.horizontal div.left,
+		div.tilingtool.canvas div.crosshairs.horizontal div.middle,
+		div.tilingtool.canvas div.crosshairs.horizontal div.right {
+			position: absolute;
+			top: 0;
+			height: 1px;
+			-webkit-background-clip: padding-box; /* for Safari */
+			background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
+			background-color: rgb(0,255,255);
+			border-top: 4.523px solid rgba(0,255,255,0.5);
+			border-bottom: 4.523px solid rgba(0,255,255,0.5);
+		}
+
+		div.tilingtool.canvas div.crosshairs.horizontal.active div.left,
+		div.tilingtool.canvas div.crosshairs.horizontal.active div.middle,
+		div.tilingtool.canvas div.crosshairs.horizontal.active div.right {
 			background-color: rgb(255,0,0);
 			border-top: 4.523px solid rgba(255,0,0,0.5);
 			border-bottom: 4.523px solid rgba(255,0,0,0.5);
-			z-index: 1001;
 		}
+
+			div.tilingtool.canvas div.crosshairs.horizontal div.left {
+				left: 0;
+				width: 30%;
+			}
+
+			div.tilingtool.canvas div.crosshairs.horizontal div.middle {
+				left: 30%;
+				width: 40%;
+			}
+
+			div.tilingtool.canvas div.crosshairs.horizontal div.right {
+				left: 70%;
+				width: 30%;
+			}
 
 	div.tilingtool.canvas div.crosshairs.vertical {
 		left: 50%;
 		top: 0;
-		width: 1px;
-		height: 100%;
-		border-left: 4.523px solid rgba(0,255,255,0.5);
-		border-right: 4.523px solid rgba(0,255,255,0.5);
+		width: 9.047px;
+		height: 100%;		
 		z-index: 1000;
 	}
 
-		div.tilingtool.canvas div.crosshairs.vertical.active {
+	div.tilingtool.canvas div.crosshairs.vertical.active {		
+		z-index: 1001;
+	}
+
+		div.tilingtool.canvas div.crosshairs.vertical div.top,
+		div.tilingtool.canvas div.crosshairs.vertical div.middle,
+		div.tilingtool.canvas div.crosshairs.vertical div.bottom {
+			position: absolute;
+			left: 0;
+			width: 1px;
+			-webkit-background-clip: padding-box; /* for Safari */
+			background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
+			background-color: rgb(0,255,255);
+			border-left: 4.523px solid rgba(0,255,255,0.5);
+			border-right: 4.523px solid rgba(0,255,255,0.5);
+		}
+
+		div.tilingtool.canvas div.crosshairs.vertical.active div.top,
+		div.tilingtool.canvas div.crosshairs.vertical.active div.middle,
+		div.tilingtool.canvas div.crosshairs.vertical.active div.bottom {
 			background-color: rgb(255,0,0);
 			border-left: 4.523px solid rgba(255,0,0,0.5);
 			border-right: 4.523px solid rgba(255,0,0,0.5);
-			z-index: 1001;
 		}
 
-	div.tilingtool.canvas div.cut {
-		position: absolute;
-		display: block;
-		margin: 0;
-		padding: 0;
-		z-index: 1;
-		background-color: white;
-	}
+			div.tilingtool.canvas div.crosshairs.vertical div.top {
+				top: 0;
+				height: 30%;
+			}
 
-		div.tilingtool.canvas div.cut.horizontal {
-			width: 100%;
-			height: 9.047px;
-		}
+			div.tilingtool.canvas div.crosshairs.vertical div.middle {
+				top: 30%;
+				height: 40%;
+			}
 
-		div.tilingtool.canvas div.cut.vertical {
-			width: 9.047px;
-			height: 100%;
-		}
+			div.tilingtool.canvas div.crosshairs.vertical div.bottom {
+				top: 70%;
+				height: 30%;
+			}
