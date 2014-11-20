@@ -10,6 +10,7 @@ function TilingTool(){
 		$vertCrosshairsLegTop = $vertCrosshairsLeg.find("div.top"),
 		$vertCrosshairsLegMiddle = $vertCrosshairsLeg.find("div.middle"),
 		$vertCrosshairsLegBottom = $vertCrosshairsLeg.find("div.bottom"),
+		$currentMouseElement = $canvas,
 		currentSliceMode = 0;
 
 	init();
@@ -39,23 +40,12 @@ function TilingTool(){
 
 		$canvas.mousemove(followMouse);
 
-		Mousetrap.bind("v",function(){
-			$vertCrosshairsLeg.addClass("active");
-			currentSliceMode |= TilingTool.SLICE_MODE.VERT;
-		},"keydown");
-
-		Mousetrap.bind("v",function(){
-			$vertCrosshairsLeg.removeClass("active");
-			$vertCrosshairsLegTop.removeClass("active");
-			$vertCrosshairsLegMiddle.removeClass("active");
-			$vertCrosshairsLegBottom.removeClass("active");
-			currentSliceMode &= ~TilingTool.SLICE_MODE.VERT;
-		},"keyup");
-
 		Mousetrap.bind("h",function(){
 			$horizCrosshairsLeg.addClass("active");
 			currentSliceMode |= TilingTool.SLICE_MODE.HORIZ;
-		},"keydown");
+			if($currentMouseElement.hasClass("tile"))
+				highlightHorizontalCrosshairs();
+		},"keypress");
 
 		Mousetrap.bind("h",function(){
 			$horizCrosshairsLeg.removeClass("active");
@@ -63,6 +53,21 @@ function TilingTool(){
 			$horizCrosshairsLegRight.removeClass("active");
 			$horizCrosshairsLegMiddle.removeClass("active");
 			currentSliceMode &= ~TilingTool.SLICE_MODE.HORIZ;
+		},"keyup");
+
+		Mousetrap.bind("v",function(){
+			$vertCrosshairsLeg.addClass("active");
+			currentSliceMode |= TilingTool.SLICE_MODE.VERT;
+			if($currentMouseElement.hasClass("tile"))
+				highlightVerticalCrosshairs();
+		},"keypress");
+
+		Mousetrap.bind("v",function(){
+			$vertCrosshairsLeg.removeClass("active");
+			$vertCrosshairsLegTop.removeClass("active");
+			$vertCrosshairsLegMiddle.removeClass("active");
+			$vertCrosshairsLegBottom.removeClass("active");
+			currentSliceMode &= ~TilingTool.SLICE_MODE.VERT;
 		},"keyup");
 
 		$canvas.mouseout(function(){
@@ -108,36 +113,34 @@ function TilingTool(){
 		$horizCrosshairsLeg.css({top: newY});
 		$vertCrosshairsLeg.css({left:newX});
 
-		// var $activeTile = $(event.target);
-		// if($activeTile.hasClass("tile")){			
-		// 	if((TilingTool.SLICE_MODE.HORIZ & currentSliceMode) === 
-		// 		TilingTool.SLICE_MODE.HORIZ)
-		// 		highlightHorizontalCrosshairs($activeTile);
+		$currentMouseElement = $(event.target);
+		if($currentMouseElement.hasClass("tile")){			
+			if((TilingTool.SLICE_MODE.HORIZ & currentSliceMode) === 
+				TilingTool.SLICE_MODE.HORIZ)
+				highlightHorizontalCrosshairs();
 
-		// 	if((TilingTool.SLICE_MODE.VERT & currentSliceMode) === 
-		// 		TilingTool.SLICE_MODE.VERT)
-		// 		highlightVerticalCrosshairs($activeTile);
-		// }
+			if((TilingTool.SLICE_MODE.VERT & currentSliceMode) === 
+				TilingTool.SLICE_MODE.VERT)
+				highlightVerticalCrosshairs();
+		}
 	}
 
-	function highlightHorizontalCrosshairs($activeTile){
-		var left = get($activeTile,"left"),
-			width = $activeTile.width(),
+	function highlightHorizontalCrosshairs(){
+		var left = get($currentMouseElement,"left"),
+			width = $currentMouseElement.width(),
 			end = Math.round(left + width),
 			canvasWidth = $canvas.width();
-
-		console.log(left + "	" + width + "	" + end);
 
 		$horizCrosshairsLegLeft.removeClass("active");
 		$horizCrosshairsLegRight.removeClass("active");
 		$horizCrosshairsLegMiddle.removeClass("active");			
 
-		if(left==="0" && end===canvasWidth){
+		if(left===0 && end===canvasWidth){
 			$horizCrosshairsLegLeft.addClass("active");
 			$horizCrosshairsLegMiddle.addClass("active");
 			$horizCrosshairsLegRight.addClass("active");
 		}
-		else if(left==="0"){
+		else if(left===0){
 			$horizCrosshairsLegLeft.addClass("active");
 		}
 		else if(end===canvasWidth){
@@ -148,13 +151,30 @@ function TilingTool(){
 		}
 	}
 
-	function highlightVerticalCrosshairs($activeTile){
-		var top = get($activeTile,"top"),
-			height = $activeTile.height();
+	function highlightVerticalCrosshairs(){
+		var top = get($currentMouseElement,"top"),
+			height = $currentMouseElement.height(),
+			end = Math.round(top + height),
+			canvasHeight = $canvas.height();
 
 		$vertCrosshairsLegTop.removeClass("active");
 		$vertCrosshairsLegMiddle.removeClass("active");
 		$vertCrosshairsLegBottom.removeClass("active");
+
+		if(top===0 && end===canvasHeight){
+			$vertCrosshairsLegTop.addClass("active");
+			$vertCrosshairsLegMiddle.addClass("active");
+			$vertCrosshairsLegBottom.addClass("active");
+		}
+		else if(top===0){
+			$vertCrosshairsLegTop.addClass("active");
+		}
+		else if(end===canvasHeight){
+			$vertCrosshairsLegBottom.addClass("active");
+		}
+		else{
+			$vertCrosshairsLegMiddle.addClass("active");			
+		}
 	}
 
 	function detectSliceMode(event){

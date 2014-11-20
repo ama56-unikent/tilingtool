@@ -74,28 +74,28 @@ div.tilingtool.canvas {
 			border-bottom: 4.523px solid rgba(0,255,255,0.5);
 		}
 
-		div.tilingtool.canvas div.crosshairs.horizontal.active div.left,
-		div.tilingtool.canvas div.crosshairs.horizontal.active div.middle,
-		div.tilingtool.canvas div.crosshairs.horizontal.active div.right {
+		div.tilingtool.canvas div.crosshairs.horizontal.active div.left.active,
+		div.tilingtool.canvas div.crosshairs.horizontal.active div.middle.active,
+		div.tilingtool.canvas div.crosshairs.horizontal.active div.right.active {
 			background-color: rgb(255,0,0);
 			border-top: 4.523px solid rgba(255,0,0,0.5);
 			border-bottom: 4.523px solid rgba(255,0,0,0.5);
 		}
 
-			div.tilingtool.canvas div.crosshairs.horizontal div.left {
-				left: 0;
-				width: 30%;
-			}
+		div.tilingtool.canvas div.crosshairs.horizontal div.left {
+			left: 0;
+			width: 30%;
+		}
 
-			div.tilingtool.canvas div.crosshairs.horizontal div.middle {
-				left: 30%;
-				width: 40%;
-			}
+		div.tilingtool.canvas div.crosshairs.horizontal div.middle {
+			left: 30%;
+			width: 40%;
+		}
 
-			div.tilingtool.canvas div.crosshairs.horizontal div.right {
-				left: 70%;
-				width: 30%;
-			}
+		div.tilingtool.canvas div.crosshairs.horizontal div.right {
+			left: 70%;
+			width: 30%;
+		}
 
 	div.tilingtool.canvas div.crosshairs.vertical {
 		left: 50%;
@@ -122,25 +122,25 @@ div.tilingtool.canvas {
 			border-right: 4.523px solid rgba(0,255,255,0.5);
 		}
 
-		div.tilingtool.canvas div.crosshairs.vertical.active div.top,
-		div.tilingtool.canvas div.crosshairs.vertical.active div.middle,
-		div.tilingtool.canvas div.crosshairs.vertical.active div.bottom {
+		div.tilingtool.canvas div.crosshairs.vertical.active div.top.active,
+		div.tilingtool.canvas div.crosshairs.vertical.active div.middle.active,
+		div.tilingtool.canvas div.crosshairs.vertical.active div.bottom.active {
 			background-color: rgb(255,0,0);
 			border-left: 4.523px solid rgba(255,0,0,0.5);
 			border-right: 4.523px solid rgba(255,0,0,0.5);
 		}
 
-			div.tilingtool.canvas div.crosshairs.vertical div.top {
-				top: 0;
-				height: 30%;
-			}
+		div.tilingtool.canvas div.crosshairs.vertical div.top {
+			top: 0;
+			height: 30%;
+		}
 
-			div.tilingtool.canvas div.crosshairs.vertical div.middle {
-				top: 30%;
-				height: 40%;
-			}
+		div.tilingtool.canvas div.crosshairs.vertical div.middle {
+			top: 30%;
+			height: 40%;
+		}
 
-			div.tilingtool.canvas div.crosshairs.vertical div.bottom {
-				top: 70%;
-				height: 30%;
-			}
+		div.tilingtool.canvas div.crosshairs.vertical div.bottom {
+			top: 70%;
+			height: 30%;
+		}
