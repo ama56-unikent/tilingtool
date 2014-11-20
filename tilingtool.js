@@ -142,12 +142,21 @@ function TilingTool(){
 		}
 		else if(left===0){
 			$horizCrosshairsLegLeft.addClass("active");
+			$horizCrosshairsLegLeft.width(width);
+			$horizCrosshairsLegMiddle.width("auto");
+			$horizCrosshairsLegRight.width("auto");
 		}
 		else if(end===canvasWidth){
 			$horizCrosshairsLegRight.addClass("active");
+			$horizCrosshairsLegLeft.width("auto");
+			$horizCrosshairsLegMiddle.width("auto");
+			$horizCrosshairsLegRight.width(width);
 		}
 		else{
 			$horizCrosshairsLegMiddle.addClass("active");
+			$horizCrosshairsLegLeft.width(left);
+			$horizCrosshairsLegMiddle.width(width);
+			$horizCrosshairsLegRight.width("auto");
 		}
 	}
 
@@ -168,12 +177,21 @@ function TilingTool(){
 		}
 		else if(top===0){
 			$vertCrosshairsLegTop.addClass("active");
+			$vertCrosshairsLegTop.height(height);
+			$vertCrosshairsLegMiddle.height("auto");
+			$vertCrosshairsLegBottom.height("auto");
 		}
 		else if(end===canvasHeight){
 			$vertCrosshairsLegBottom.addClass("active");
+			$vertCrosshairsLegTop.height("auto");
+			$vertCrosshairsLegMiddle.height("auto");
+			$vertCrosshairsLegBottom.height(height);
 		}
 		else{
-			$vertCrosshairsLegMiddle.addClass("active");			
+			$vertCrosshairsLegMiddle.addClass("active");
+			$vertCrosshairsLegTop.height(top);
+			$vertCrosshairsLegMiddle.height(height);
+			$vertCrosshairsLegBottom.height("auto");			
 		}
 	}
 
