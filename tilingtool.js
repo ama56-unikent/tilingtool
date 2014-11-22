@@ -17,6 +17,7 @@ function TilingTool(){
 		$markerTemplate = $("<div class='marker'>"),
 		$numberTemplate = $("<div class='number'>"),
 		$currentMouseElement = $canvas,
+		possibleXpositions = [],
 		currentSliceMode = 0;
 
 	init();
@@ -38,13 +39,27 @@ function TilingTool(){
 		buildHorizontalRuler();
 		buildVerticalRuler();
 
+		function buildHorizontalRuler(){
+			var left = TilingTool.COLUMN_UNIT;
+			for(var i=0; i<11; i++){
+				$markerTemplate.clone().addClass("id"+i).css({left:left})
+					.appendTo($horizontalRuler);
+				possibleXpositions.push(left);
+				left += TilingTool.CROSSHAIRS_THICKNESS + TilingTool.COLUMN_UNIT;
+			}
+			var left = horizontalSnap( 
+				possibleXpositions[ Math.round(possibleXpositions.length / 2) - 1 ] );
+			$vertCrosshairsLeg.css({left: left});
+		}	
+
 		function buildVerticalRuler(){
 			var height = $canvas.height(),
 				step = 5,
 				top = 5;
 
 			while(top<height){
-				var $marker = $markerTemplate.clone().css({top:top});
+				var $marker = $markerTemplate.clone().addClass("id"+top)
+								.css({top:top});
 				var num = top/25;
 
 				if(Number.isInteger(num)){
@@ -62,17 +77,12 @@ function TilingTool(){
 				top += step;
 			}
 
-			function isEven(x) { return (x%2)==0; }
-			function isOdd(x) { return !isEven(x); }
-		}
+			var top = verticalSnap(height/2);
+			$horizCrosshairsLeg.css({top: top});
 
-		function buildHorizontalRuler(){
-			var left = TilingTool.COLUMN_UNIT;
-			for(var i=0; i<11; i++){
-				$markerTemplate.clone().css({left:left}).appendTo($horizontalRuler);
-				left += TilingTool.CROSSHAIRS_THICKNESS + TilingTool.COLUMN_UNIT;
-			}
-		}		
+			function isEven(num) { return (num%2)===0; }
+			function isOdd(num) { return !isEven(num); }
+		}
 	}
 
 	function listen(){
@@ -160,6 +170,9 @@ function TilingTool(){
 		else if(newY>yLimit)
 			newY = yLimit;
 
+		newX = horizontalSnap(newX);
+		newY = verticalSnap(newY);
+
 		$horizCrosshairsLeg.css({top: newY});
 		$vertCrosshairsLeg.css({left:newX});
 
@@ -173,6 +186,56 @@ function TilingTool(){
 				TilingTool.SLICE_MODE.VERT)
 				highlightVerticalCrosshairs();
 		}
+	}
+
+	function horizontalSnap(currentX){
+		var leastDiff;
+		for(var i=0 ; i<possibleXpositions.length; i++){
+			var xPosition = possibleXpositions[i];
+			var diff = Math.abs(xPosition - currentX);
+			if(leastDiff===undefined)
+				leastDiff = diff;
+			else{
+				if(leastDiff<=diff){
+					currentX = possibleXpositions[i-1];
+					break;
+				}
+				else{
+					leastDiff = diff;
+					if(i===possibleXpositions.length-1)
+						currentX = possibleXpositions[i];
+				}
+			}
+		}
+
+		highlightMarker(i-1, $horizontalRuler);
+
+		return currentX;
+	}
+
+	function verticalSnap(currentY){
+
+		var remainder;
+		currentY = Math.round(currentY);
+
+		if(currentY<5)
+			remainder = currentY;
+		else
+			remainder = currentY%5;
+
+		if(remainder<2.5)
+			currentY -= remainder;
+		else
+			currentY += (5-remainder);
+
+		highlightMarker(currentY, $verticalRuler);
+		
+		return currentY;
+	}
+
+	function highlightMarker(markerID, $ruler){
+		$ruler.find("div.marker.active").removeClass("active");
+		$ruler.find("div.marker.id"+markerID).addClass("active");
 	}
 
 	function highlightHorizontalCrosshairs(){
