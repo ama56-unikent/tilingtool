@@ -90,7 +90,11 @@ div.tilingtool {
 			}
 
 				div.tilingtool div.canvas div.ruler.vertical div.marker div.number {
-					color: white;
+					color: rgb(255,255,255);
+				}
+
+				div.tilingtool div.canvas div.ruler.vertical div.marker div.number.active {
+					color: rgb(255,0,213);
 				}
 
 		div.tilingtool div.canvas div.tile {

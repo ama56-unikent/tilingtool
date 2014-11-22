@@ -234,8 +234,14 @@ function TilingTool(){
 	}
 
 	function highlightMarker(markerID, $ruler){
-		$ruler.find("div.marker.active").removeClass("active");
-		$ruler.find("div.marker.id"+markerID).addClass("active");
+		$ruler.find("div.marker.active").each(function(){
+			$(this).removeClass("active");
+			$(this).find("div.number.active").removeClass("active");
+		});
+		$ruler.find("div.marker.id"+markerID).each(function(){
+			$(this).addClass("active");
+			$(this).find("div.number").addClass("active");
+		});
 	}
 
 	function highlightHorizontalCrosshairs(){
