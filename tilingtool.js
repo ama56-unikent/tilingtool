@@ -436,7 +436,7 @@ function TilingTool(){
 	}
 
 	function exportToRealGrid(){
-		var gridGen = new GridGen($canvas);
+		
 	}
 }
 
