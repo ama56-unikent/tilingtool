@@ -1,6 +1,7 @@
 function TilingTool(){
 
-	var $tilingTool = $("div.tilingtool"),
+	var self = this,
+		$tilingTool = $("div.tilingtool"),
 		$canvas = $tilingTool.find("div.canvas"),
 		$paramGen = $tilingTool.find("form.paramgen"),
 		$paramGenChildren = $paramGen.find(":input"),
@@ -94,7 +95,7 @@ function TilingTool(){
 			paramAction($(this).attr("name"),$(this).val());
 		});
 
-		$paramGenChildren.filter("input[type='button']").click(function(event){
+		$paramGenChildren.filter("button").click(function(event){
 			paramAction($(this).attr("name"),$(this).val());
 		});
 
@@ -146,6 +147,9 @@ function TilingTool(){
 		switch(name){
 			case "canvas-height":
 				$canvas.css({height: value});
+				break;
+			case "export":
+				exportToRealGrid();
 				break;
 		}
 	}
@@ -430,11 +434,16 @@ function TilingTool(){
 			return $element.clone().removeClass("initial");
 		}
 	}
+
+	function exportToRealGrid(){
+		var gridGen = new GridGen($canvas);
+	}
 }
 
 TilingTool.CROSSHAIRS_THICKNESS = 9.047;
 TilingTool.COLUMN_UNIT = 54.359;
-TilingTool.SLICE_MODE = {HORIZ: 1,
+TilingTool.SLICE_MODE = {
+	HORIZ: 1,
 	VERT: 2
 };
 

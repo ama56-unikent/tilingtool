@@ -3,15 +3,18 @@
 	<head>
 		<title>Tiling Tool</title>
 		<link rel='stylesheet' media='all' type='text/css' href='tilingtool.css'/>
+		<link rel='stylesheet' media='all' type='text/css' href='grid.css'/>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="http://cdn.craig.is/js/mousetrap/mousetrap.min.js?9d308"></script>
+		<script src="gridgen.js"></script>
 		<script src="tilingtool.js"></script>
 	</head>	
 	<body>
-		<div class="tilingtool">
+		<div id="content" class="tilingtool">
 			<h1>Tiling Tool</h1>
 			<form class="paramgen">
 				<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
+				<button name="export">Export</button>
 			</form>
 			<div class="canvas">
 				<div class="horizontal ruler"></div>
