@@ -41,16 +41,33 @@ function TilingTool(){
 		buildVerticalRuler();
 
 		function buildHorizontalRuler(){
-			var left = TilingTool.COLUMN_UNIT;
-			for(var i=0; i<11; i++){
-				$markerTemplate.clone().addClass("id"+i).css({left:left})
-					.appendTo($horizontalRuler);
-				possibleXpositions.push(left);
-				left += TilingTool.CROSSHAIRS_THICKNESS + TilingTool.COLUMN_UNIT;
-			}
-			var left = horizontalSnap( 
+			var index = 1;
+			$horizontalRuler.find("div.span1").each(function(){
+				var $span = $(this);
+				$span.addClass("unit-id"+index);
+
+				var marginLeft = px2Float($span, "margin-left");
+				if(marginLeft!==0){
+					var left = $span.position().left,
+						borderWidth = marginLeft/2;
+
+					$markerTemplate.clone().addClass("marker-id-"+(index-1))
+						.css({
+							left: left,
+							borderLeftWidth: borderWidth,
+							borderRightWidth: borderWidth
+						})
+						.appendTo($horizontalRuler);
+
+					possibleXpositions.push(left);
+				}
+
+				index++;
+			});
+
+			var snappedLeft = horizontalSnap( 
 				possibleXpositions[ Math.round(possibleXpositions.length / 2) - 1 ] );
-			$vertCrosshairsLeg.css({left: left});
+			$vertCrosshairsLeg.css({left: snappedLeft});
 		}	
 
 		function buildVerticalRuler(){
@@ -59,7 +76,7 @@ function TilingTool(){
 				top = 5;
 
 			while(top<height){
-				var $marker = $markerTemplate.clone().addClass("id"+top)
+				var $marker = $markerTemplate.clone().addClass("marker-id-"+top)
 								.css({top:top});
 				var num = top/25;
 
@@ -212,7 +229,8 @@ function TilingTool(){
 			}
 		}
 
-		highlightMarker(i-1, $horizontalRuler);
+		// We pass i instead of i-1 because the markers are numbered starting from 1
+		highlightMarker(i, $horizontalRuler);
 
 		return currentX;
 	}
@@ -242,14 +260,14 @@ function TilingTool(){
 			$(this).removeClass("active");
 			$(this).find("div.number.active").removeClass("active");
 		});
-		$ruler.find("div.marker.id"+markerID).each(function(){
+		$ruler.find("div.marker.marker-id-"+markerID).each(function(){
 			$(this).addClass("active");
 			$(this).find("div.number").addClass("active");
 		});
 	}
 
 	function highlightHorizontalCrosshairs(){
-		var left = get($currentMouseElement,"left"),
+		var left = px2Float($currentMouseElement,"left"),
 			width = $currentMouseElement.width(),
 			end = Math.round(left + width),
 			canvasWidth = $canvas.width();
@@ -284,7 +302,7 @@ function TilingTool(){
 	}
 
 	function highlightVerticalCrosshairs(){
-		var top = get($currentMouseElement,"top"),
+		var top = px2Float($currentMouseElement,"top"),
 			height = $currentMouseElement.height(),
 			end = Math.round(top + height),
 			canvasHeight = $canvas.height();
@@ -327,15 +345,15 @@ function TilingTool(){
 		if($(event.target).hasClass("tile")){
 			if((TilingTool.SLICE_MODE.HORIZ & currentSliceMode) === 
 				TilingTool.SLICE_MODE.HORIZ){
-				horizGap.start = get($horizCrosshairsLeg, "top");
-				horizGap.end = get($horizCrosshairsLeg, "top") + 
+				horizGap.start = px2Float($horizCrosshairsLeg, "top");
+				horizGap.end = px2Float($horizCrosshairsLeg, "top") + 
 								TilingTool.CROSSHAIRS_THICKNESS;
 			}
 
 			if((TilingTool.SLICE_MODE.VERT & currentSliceMode) === 
 				TilingTool.SLICE_MODE.VERT){
-				vertGap.start = get($vertCrosshairsLeg, "left");
-				vertGap.end = get($vertCrosshairsLeg, "left") + 
+				vertGap.start = px2Float($vertCrosshairsLeg, "left");
+				vertGap.end = px2Float($vertCrosshairsLeg, "left") + 
 								TilingTool.CROSSHAIRS_THICKNESS;
 			}
 
@@ -346,8 +364,8 @@ function TilingTool(){
 		
 	}
 
-	function get($element, side){
-		return parseFloat($element.css(side).replace("px",""));
+	function px2Float($element, prop){
+		return parseFloat($element.css(prop).replace("px",""));
 	}
 
 	function slice($source, horizGap, vertGap){
@@ -379,8 +397,8 @@ function TilingTool(){
 		function sliceHorizontally($source){
 			var $topTile = clone($source),
 				$bottomTile = clone($source),
-				sourceTop = get($source, "top"),
-				sourceLeft = get($source, "left"),
+				sourceTop = px2Float($source, "top"),
+				sourceLeft = px2Float($source, "left"),
 				sourceHeight = $source.height(),
 				sourceWidth = $source.width(),
 				topTileHeight = horizGap.start - sourceTop,
@@ -406,8 +424,8 @@ function TilingTool(){
 		function sliceVertically($source){
 			var $leftTile = clone($source),
 				$rightTile = clone($source),
-				sourceTop = get($source, "top"),
-				sourceLeft = get($source, "left"),
+				sourceTop = px2Float($source, "top"),
+				sourceLeft = px2Float($source, "left"),
 				sourceHeight = $source.height(),
 				sourceWidth = $source.width(),
 				leftTileWidth = vertGap.start - sourceLeft,
