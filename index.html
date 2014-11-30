@@ -11,6 +11,7 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 		<script src="jquery.htmlClean.min.js"></script>
 		<script src="jquery.fittext.js"></script>
+		<script src="ZeroClipboard.min.js"></script>
 		<script src="tilingtool.js"></script>
 	</head>	
 	<body>
@@ -57,7 +58,12 @@
 					
 				</div>	
 				<div class="output">
-					<button name="code-view-switch" value="open">&#10548;</button>
+					<button name="code-view-switch" value="open">
+						Code View &#10548;
+					</button>
+					<button name="code-copier" value="copy" data-clipboard-text>
+						Copy &#9988;
+					</button>
 					<pre class="html"></pre>
 				</div>
 				</form>

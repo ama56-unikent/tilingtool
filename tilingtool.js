@@ -7,6 +7,7 @@ function TilingTool(){
 		$outputWrapper = $tilingTool.find("div.output"),
 		$outputHTML = $outputWrapper.find("pre.html"),
 		$codeViewSwitch = $paramGen.find("button[name='code-view-switch']"),
+		$codeCopier = $paramGen.find("button[name='code-copier']"),
 		$paramGenChildren = $paramGen.find(":input"),
 		$grid = $canvas.find("div.grid"),
 		$horizontalRuler = $canvas.find("div.ruler.horizontal"),
@@ -23,7 +24,8 @@ function TilingTool(){
 		$numberTemplate = $("<div class='number'>"),
 		$currentMouseElement = $canvas,
 		possibleXpositions = [],
-		currentSliceMode = 0;
+		currentSliceMode = 0,
+		clipboardClient;
 
 	init();
 
@@ -32,7 +34,7 @@ function TilingTool(){
 		buildCanvas();
 		buildRulers();
 		listen();
-		exportMarkup();
+		finalize();
 	}
 
 	function buildConstants() {
@@ -207,6 +209,11 @@ function TilingTool(){
 		});
 
 		$canvas.click(detectSliceMode);
+	}
+
+	function finalize(){
+		exportMarkup();
+		clipboardClient = new ZeroClipboard($codeCopier[0]);
 	}
 
 	function paramAction(name, value){
@@ -522,25 +529,31 @@ function TilingTool(){
 
 	function exportMarkup(){
 		var $exportGrid = $grid.clone(),
-			$exportHTML = "";
+			exportHTML = "";
 
 		$exportGrid.find("div.initial").removeClass("initial");
-		$exportHTML = $.htmlClean($exportGrid.html(), {format:true})
+		exportHTML = $.htmlClean($exportGrid.html(), {format:true})
 
-		$outputHTML.text($exportHTML);
+		$outputHTML.text(exportHTML);
 		hljs.highlightBlock($outputHTML[0]);
+
+		$codeCopier.attr({"data-clipboard-text": exportHTML});
 	}
 
 	function openCodeView(){
 		$outputHTML.show();
+		$codeCopier.show();
 		$codeViewSwitch.val("close");
-		$codeViewSwitch.html("&#10549;");
+		$codeViewSwitch.html("Code View &#10549;");
+		$outputWrapper.addClass("min-height-opened");
 	}
 
 	function closeCodeView(){
 		$outputHTML.hide();
+		$codeCopier.hide();
 		$codeViewSwitch.val("open");
-		$codeViewSwitch.html("&#10548;");
+		$codeViewSwitch.html("Code View &#10548;");
+		$outputWrapper.removeClass("min-height-opened");
 	}
 
 }

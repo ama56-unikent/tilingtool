@@ -4,6 +4,14 @@ html, body {
 	padding: 0;
 }
 
+html {
+	overflow: hidden;
+}
+
+body {
+	overflow: auto;
+}
+
 	div#bg:before {
 		content: "";
 		position: fixed;
@@ -25,6 +33,7 @@ html, body {
 		width: 100%;
 		min-height: 100%;
 		background-color: rgba(37,32,53,0.7);
+		overflow: auto;
 	}
 
 		div#title {
@@ -249,7 +258,7 @@ html, body {
 			top: 0;
 			left: 0;
 			bottom: 0;
-			height: 60%;
+			height: 600;
 			max-width: 100%;
 			min-width: 60px;
 			margin: auto 0;
@@ -264,33 +273,64 @@ html, body {
 			right: 0;
 			left: 0;
 			bottom: 0;
-			width: 802px;
-			max-height: 100%;
+			width: 900px;
+			max-height: 95%;
 			min-height: 45px;
 			margin: 0 auto;
+			padding: 10px 5px;
 			z-index: 2000;
 			background-color: rgba(20,20,20,0.8);
 			border: 1px solid white;
 			border-bottom: 0;
 			overflow: auto;
+			text-align: center;
 		}
 
+			div.tilingtool div.output.min-height-opened {
+				min-height: 250px;
+			}
+
 			div.tilingtool div.output button[name="code-view-switch"] {
-				position: absolute;
-				top: 0;
-				right: 0;
+				display: block;
+				width: 100%;
 				color: #e1dfe8;
 				background-color: transparent;
 				background-image: none;
 				border: 0;
-				font-size: 35px;
+				opacity: 0.7;
+				font-size: 40px;
 				padding: 2px 6px;
+				cursor: pointer;
+				letter-spacing: 5px;
 			}
 
 			div.tilingtool div.output button[name="code-view-switch"]:hover {
 				color: rgb(0,255,255);
 			}
 
+			div.tilingtool div.output button[name="code-copier"] {
+				display: none;
+				position: absolute;
+				top: 150px;
+				right: 0;
+				background-color: #e1dfe8;
+				background-image: none;
+				border: 0;
+				opacity: 0.7;
+				cursor: pointer;
+				font-size: 30px;
+				font-weight: bold;
+				color: rgba(20,20,20,0.8);
+				box-shadow: 0 0 8px 5px #e1dfe8;
+				padding: 5px 50px 5px 200px;
+			}
+
+			div.tilingtool div.output button[name="code-copier"].zeroclipboard-is-hover {
+				background-color: rgb(0,255,255);
+				box-shadow: 0 0 8px 5px rgb(0,255,255);
+			}
+
+			div.tilingtool div.output button[name="code-copier"]:focus,
 			div.tilingtool div.output button[name="code-view-switch"]:focus {
 				outline: 0;
 			}
@@ -299,6 +339,7 @@ html, body {
 				display: none;
 				margin-top: 0;
 				margin-bottom: 0;
+				text-align: left;
 			}
 
 			/* Overriding the themee */
