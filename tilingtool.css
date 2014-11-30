@@ -1,4 +1,5 @@
 html, body {
+	height: 100%;
 	margin: 0;
 	padding: 0;
 }
@@ -6,8 +7,8 @@ html, body {
 	div#bg:before {
 		content: "";
 		position: fixed;
+		top: 0;
 		left: 0;
-		right: 0;
 		z-index: -2;	  
 		display: block;
 		width: 100%;
@@ -21,21 +22,19 @@ html, body {
 	}
 
 	div#bg {
-		position: relative;
 		width: 100%;
-		height: 100%;
+		min-height: 100%;
 		background-color: rgba(37,32,53,0.7);
 	}
 
-		div#title {			
+		div#title {
 			position: fixed;
-			top: 100px;
-			left: 0;
-			bottom: 0;
-			right: 0;
+			width: 50%;
+			height: 50%;
+			margin: auto;			
+			top: 0; left: 0; bottom: 0; right: 0;
 			z-index: -1;
-			text-align: center;
-			height: 100%;
+			text-align: center;			
 			color: #e1dfe8;
 			font-size: 15em;
 			opacity: 0.8;
@@ -245,17 +244,66 @@ html, body {
 					height: 500px;
 				}
 
-		div.tilingtool div.output {
-			display: none;
+		div.tilingtool div.toolbar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			height: 60%;
+			max-width: 100%;
+			min-width: 60px;
+			margin: auto 0;
+			z-index: 2000;
+			background-color: rgba(20,20,20,0.8);
+			border: 1px solid white;
+			border-left: 0;
 		}
 
+		div.tilingtool div.output {
+			position: fixed;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			width: 802px;
+			max-height: 100%;
+			min-height: 45px;
+			margin: 0 auto;
+			z-index: 2000;
+			background-color: rgba(20,20,20,0.8);
+			border: 1px solid white;
+			border-bottom: 0;
+			overflow: auto;
+		}
+
+			div.tilingtool div.output button[name="code-view-switch"] {
+				position: absolute;
+				top: 0;
+				right: 0;
+				color: #e1dfe8;
+				background-color: transparent;
+				background-image: none;
+				border: 0;
+				font-size: 35px;
+				padding: 2px 6px;
+			}
+
+			div.tilingtool div.output button[name="code-view-switch"]:hover {
+				color: rgb(0,255,255);
+			}
+
+			div.tilingtool div.output button[name="code-view-switch"]:focus {
+				outline: 0;
+			}
+
 			div.tilingtool div.output pre.html {
-				border: 1px solid white;
+				display: none;
+				margin-top: 0;
+				margin-bottom: 0;
 			}
 
 			/* Overriding the themee */
 			div.tilingtool div.output pre.html.hljs {
-				background-color: rgba(20,20,20,0.8);
+				background-color: transparent;
 			}
 
 			div.tilingtool div.output pre.html.hljs::selection,

@@ -10,6 +10,7 @@
 		<script src="http://cdn.craig.is/js/mousetrap/mousetrap.min.js?9d308"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 		<script src="jquery.htmlClean.min.js"></script>
+		<script src="jquery.fittext.js"></script>
 		<script src="tilingtool.js"></script>
 	</head>	
 	<body>
@@ -17,7 +18,7 @@
 			<div id="title">Tiles</div>
 			<div id="content" class="tilingtool">
 				<form class="paramgen">
-					<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
+					<label class="custom">Canvas height: <input type="text" class="custom autostart" name="canvas-height" value="500"></label>
 					<div class="canvas">
 						<div class="horizontal ruler">
 							<div class="row-fluid">
@@ -52,13 +53,17 @@
 							</div>
 						</div>				
 					</div>
-					<button name="export" class="gradient autostart">Export</button>
-				</form>
+				<div class="toolbar">
+					
+				</div>	
 				<div class="output">
+					<button name="code-view-switch" value="open">&#10548;</button>
 					<pre class="html"></pre>
 				</div>
+				</form>
 				<script>
 					$(document).ready(function () {
+						$("div#title").fitText(0.3);
 						var tilingTool = new TilingTool();
 					});
 				</script>

@@ -6,6 +6,7 @@ function TilingTool(){
 		$paramGen = $tilingTool.find("form.paramgen"),
 		$outputWrapper = $tilingTool.find("div.output"),
 		$outputHTML = $outputWrapper.find("pre.html"),
+		$codeViewSwitch = $paramGen.find("button[name='code-view-switch']"),
 		$paramGenChildren = $paramGen.find(":input"),
 		$grid = $canvas.find("div.grid"),
 		$horizontalRuler = $canvas.find("div.ruler.horizontal"),
@@ -31,6 +32,7 @@ function TilingTool(){
 		buildCanvas();
 		buildRulers();
 		listen();
+		exportMarkup();
 	}
 
 	function buildConstants() {
@@ -212,8 +214,11 @@ function TilingTool(){
 			case "canvas-height":
 				$canvas.css({height: value});
 				break;
-			case "export":
-				exportMarkup();
+			case "code-view-switch":
+				if(value==="open")
+					openCodeView();
+				else if(value==="close")
+					closeCodeView();
 				break;
 		}
 	}
@@ -438,6 +443,8 @@ function TilingTool(){
 		if(horizontalTiles.length>0)
 			sliceVertically();
 
+		exportMarkup();
+
 		function sliceHorizontally(){
 
 			var $newSource = null,
@@ -522,9 +529,20 @@ function TilingTool(){
 
 		$outputHTML.text($exportHTML);
 		hljs.highlightBlock($outputHTML[0]);
-
-		$outputWrapper.show();
 	}
+
+	function openCodeView(){
+		$outputHTML.show();
+		$codeViewSwitch.val("close");
+		$codeViewSwitch.html("&#10549;");
+	}
+
+	function closeCodeView(){
+		$outputHTML.hide();
+		$codeViewSwitch.val("open");
+		$codeViewSwitch.html("&#10548;");
+	}
+
 }
 
 TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS = 0;
