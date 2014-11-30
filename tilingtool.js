@@ -4,7 +4,10 @@ function TilingTool(){
 		$tilingTool = $("div.tilingtool"),
 		$canvas = $tilingTool.find("div.canvas"),
 		$paramGen = $tilingTool.find("form.paramgen"),
+		$outputWrapper = $tilingTool.find("div.output"),
+		$outputHTML = $outputWrapper.find("pre.html"),
 		$paramGenChildren = $paramGen.find(":input"),
+		$grid = $canvas.find("div.grid"),
 		$horizontalRuler = $canvas.find("div.ruler.horizontal"),
 		$verticalRuler = $canvas.find("div.ruler.vertical"),
 		$horizCrosshairsLeg = $canvas.find("div.crosshairs.horizontal"),
@@ -24,9 +27,49 @@ function TilingTool(){
 	init();
 
 	function init(){
+		buildConstants();
 		buildCanvas();
 		buildRulers();
 		listen();
+	}
+
+	function buildConstants() {
+		var $sampleRow = $horizontalRuler.find("div[class*='row']"),
+			$sampleSpan = $sampleRow.find("div[class*='span']:nth-child(2)");
+
+		TilingTool.VERTICAL_CROSSHAIRS_THICKNESS = px2Float($sampleSpan, "margin-left");
+		TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS = px2Float($sampleRow, "margin-bottom");
+		TilingTool.COLUMN_UNIT = px2Float($sampleSpan, "width");
+
+		setupDynamicCSS();
+
+		function setupDynamicCSS() {
+			$sampleRow.css({"margin-bottom": 0});
+
+			$vertCrosshairsLeg.css({width: TilingTool.VERTICAL_CROSSHAIRS_THICKNESS});
+			
+			$vertCrosshairsLeg.find("div.cell").each(function(){
+				var $cell = $(this),
+					borderWidth = (TilingTool.VERTICAL_CROSSHAIRS_THICKNESS - 1)/2;
+					
+					$cell.css({
+						"border-left-width": borderWidth,
+						"border-right-width": borderWidth
+					});
+			});
+
+			$horizCrosshairsLeg.css({height: TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS});
+
+			$horizCrosshairsLeg.find("div.cell").each(function(){
+				var $cell = $(this),
+					borderWidth = (TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS - 1)/2;
+					
+					$cell.css({
+						"border-top-width": borderWidth,
+						"border-bottom-width": borderWidth
+					});
+			});
+		}
 	}
 
 	function buildCanvas(){
@@ -49,7 +92,7 @@ function TilingTool(){
 				var marginLeft = px2Float($span, "margin-left");
 				if(marginLeft!==0){
 					var left = $span.position().left,
-						borderWidth = marginLeft/2;
+						borderWidth = (TilingTool.VERTICAL_CROSSHAIRS_THICKNESS - 1)/2;
 
 					$markerTemplate.clone().addClass("marker-id-"+(index-1))
 						.css({
@@ -65,9 +108,8 @@ function TilingTool(){
 				index++;
 			});
 
-			var snappedLeft = horizontalSnap( 
-				possibleXpositions[ Math.round(possibleXpositions.length / 2) - 1 ] );
-			$vertCrosshairsLeg.css({left: snappedLeft});
+			horizontalSnap( possibleXpositions[ 
+				Math.round(possibleXpositions.length / 2) - 1 ] );
 		}	
 
 		function buildVerticalRuler(){
@@ -77,7 +119,7 @@ function TilingTool(){
 
 			while(top<height){
 				var $marker = $markerTemplate.clone().addClass("marker-id-"+top)
-								.css({top:top});
+								.css({top:top-0.5});
 				var num = top/25;
 
 				if(Number.isInteger(num)){
@@ -95,8 +137,7 @@ function TilingTool(){
 				top += step;
 			}
 
-			var top = verticalSnap(height/2);
-			$horizCrosshairsLeg.css({top: top});
+			verticalSnap(height/2);
 
 			function isEven(num) { return (num%2)===0; }
 			function isOdd(num) { return !isEven(num); }
@@ -120,8 +161,9 @@ function TilingTool(){
 
 		Mousetrap.bind("h",function(){
 			$horizCrosshairsLeg.addClass("active");
+			$verticalRuler.addClass("active");
 			currentSliceMode |= TilingTool.SLICE_MODE.HORIZ;
-			if($currentMouseElement.hasClass("tile"))
+			if($currentMouseElement.is("[class*='span']"))
 				highlightHorizontalCrosshairs();
 		},"keypress");
 
@@ -130,13 +172,15 @@ function TilingTool(){
 			$horizCrosshairsLegLeft.removeClass("active");
 			$horizCrosshairsLegRight.removeClass("active");
 			$horizCrosshairsLegMiddle.removeClass("active");
+			$verticalRuler.removeClass("active");
 			currentSliceMode &= ~TilingTool.SLICE_MODE.HORIZ;
 		},"keyup");
 
 		Mousetrap.bind("v",function(){
 			$vertCrosshairsLeg.addClass("active");
+			$horizontalRuler.addClass("active");
 			currentSliceMode |= TilingTool.SLICE_MODE.VERT;
-			if($currentMouseElement.hasClass("tile"))
+			if($currentMouseElement.is("[class*='span']"))
 				highlightVerticalCrosshairs();
 		},"keypress");
 
@@ -145,6 +189,7 @@ function TilingTool(){
 			$vertCrosshairsLegTop.removeClass("active");
 			$vertCrosshairsLegMiddle.removeClass("active");
 			$vertCrosshairsLegBottom.removeClass("active");
+			$horizontalRuler.removeClass("active");
 			currentSliceMode &= ~TilingTool.SLICE_MODE.VERT;
 		},"keyup");
 
@@ -155,6 +200,8 @@ function TilingTool(){
 			$horizCrosshairsLegLeft.removeClass("active");
 			$horizCrosshairsLegRight.removeClass("active");
 			$horizCrosshairsLegMiddle.removeClass("active");
+			$horizontalRuler.removeClass("active");
+			$horizontalRuler.removeClass("active");
 		});
 
 		$canvas.click(detectSliceMode);
@@ -166,7 +213,7 @@ function TilingTool(){
 				$canvas.css({height: value});
 				break;
 			case "export":
-				exportToRealGrid();
+				exportMarkup();
 				break;
 		}
 	}
@@ -175,11 +222,12 @@ function TilingTool(){
 		event.stopPropagation();
 
 		var offset = $canvas.offset(),
-			xLimit = $canvas.innerWidth() - TilingTool.CROSSHAIRS_THICKNESS,
-			yLimit = $canvas.innerHeight() - TilingTool.CROSSHAIRS_THICKNESS,
-			normalizationFactor = (TilingTool.CROSSHAIRS_THICKNESS-1)/2;
-			newX = event.pageX - offset.left - normalizationFactor,
-			newY = event.pageY - offset.top - normalizationFactor;
+			xLimit = $canvas.innerWidth() - TilingTool.VERTICAL_CROSSHAIRS_THICKNESS,
+			yLimit = $canvas.innerHeight() - TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS,
+			xNormalizationFactor = (TilingTool.VERTICAL_CROSSHAIRS_THICKNESS-1)/2,
+			yNormalizationFactor = (TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS-1)/2;
+			newX = event.pageX - offset.left - xNormalizationFactor,
+			newY = event.pageY - offset.top - yNormalizationFactor;
 
 		if(newX<0)
 			newX = 0;
@@ -191,14 +239,11 @@ function TilingTool(){
 		else if(newY>yLimit)
 			newY = yLimit;
 
-		newX = horizontalSnap(newX);
-		newY = verticalSnap(newY);
-
-		$horizCrosshairsLeg.css({top: newY});
-		$vertCrosshairsLeg.css({left:newX});
+		horizontalSnap(newX);
+		verticalSnap(newY);
 
 		$currentMouseElement = $(event.target);
-		if($currentMouseElement.hasClass("tile")){			
+		if($currentMouseElement.is("[class*='span']")){			
 			if((TilingTool.SLICE_MODE.HORIZ & currentSliceMode) === 
 				TilingTool.SLICE_MODE.HORIZ)
 				highlightHorizontalCrosshairs();
@@ -232,7 +277,7 @@ function TilingTool(){
 		// We pass i instead of i-1 because the markers are numbered starting from 1
 		highlightMarker(i, $horizontalRuler);
 
-		return currentX;
+		$vertCrosshairsLeg.css({left: currentX}).attr({"data-position-index":i});
 	}
 
 	function verticalSnap(currentY){
@@ -251,8 +296,10 @@ function TilingTool(){
 			currentY += (5-remainder);
 
 		highlightMarker(currentY, $verticalRuler);
+
+		var top = currentY - (TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS/2);
 		
-		return currentY;
+		$horizCrosshairsLeg.css({top: top}).attr({"data-position-index":top});
 	}
 
 	function highlightMarker(markerID, $ruler){
@@ -267,7 +314,8 @@ function TilingTool(){
 	}
 
 	function highlightHorizontalCrosshairs(){
-		var left = px2Float($currentMouseElement,"left"),
+		var left = $currentMouseElement.position().left
+					 + px2Float($currentMouseElement,"margin-left"),
 			width = $currentMouseElement.width(),
 			end = Math.round(left + width),
 			canvasWidth = $canvas.width();
@@ -302,7 +350,7 @@ function TilingTool(){
 	}
 
 	function highlightVerticalCrosshairs(){
-		var top = px2Float($currentMouseElement,"top"),
+		var top = $currentMouseElement.position().top,
 			height = $currentMouseElement.height(),
 			end = Math.round(top + height),
 			canvasHeight = $canvas.height();
@@ -339,127 +387,149 @@ function TilingTool(){
 	function detectSliceMode(event){
 		event.stopPropagation();
 
-		var horizGap = {},
-			vertGap = {};
+		var $span = $(event.target),
+			horizontalTiles = [],
+			verticalTiles = [];
 
-		if($(event.target).hasClass("tile")){
+		if($span.is("[class*='span']")){
 			if((TilingTool.SLICE_MODE.HORIZ & currentSliceMode) === 
 				TilingTool.SLICE_MODE.HORIZ){
-				horizGap.start = px2Float($horizCrosshairsLeg, "top");
-				horizGap.end = px2Float($horizCrosshairsLeg, "top") + 
-								TilingTool.CROSSHAIRS_THICKNESS;
+				var currentStartPoint = $span.position().top,
+					currentHeight = $span.height(),
+					slicePoint = parseInt($horizCrosshairsLeg.attr("data-position-index"));
+				
+				verticalTiles[0] = {};
+				verticalTiles[0].height = slicePoint - currentStartPoint;
+
+				verticalTiles[1] = {};
+				verticalTiles[1].height = currentHeight - verticalTiles[0].height 
+											- TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS;
 			}
 
 			if((TilingTool.SLICE_MODE.VERT & currentSliceMode) === 
 				TilingTool.SLICE_MODE.VERT){
-				vertGap.start = px2Float($vertCrosshairsLeg, "left");
-				vertGap.end = px2Float($vertCrosshairsLeg, "left") + 
-								TilingTool.CROSSHAIRS_THICKNESS;
+				var currentStartPoint = parseInt($span.attr("data-start-point")),
+					currentType = parseInt($span.attr("data-span-type")),
+					slicePoint = parseInt($vertCrosshairsLeg.attr("data-position-index"));
+
+				horizontalTiles[0] = {};
+				horizontalTiles[0].start = currentStartPoint;
+				horizontalTiles[0].type = slicePoint - currentStartPoint;
+
+				horizontalTiles[1] = {};
+				horizontalTiles[1].start = slicePoint;
+				horizontalTiles[1].type = currentType - horizontalTiles[0].type;
 			}
 
-			if(!$.isEmptyObject(horizGap) || !$.isEmptyObject(vertGap))
-				slice($(event.target), horizGap, vertGap);
+			if(horizontalTiles.length>0 || verticalTiles.length>0)
+				slice($span, horizontalTiles, verticalTiles);
 		}
-
-		
 	}
 
 	function px2Float($element, prop){
 		return parseFloat($element.css(prop).replace("px",""));
 	}
 
-	function slice($source, horizGap, vertGap){
-		var finalTiles = [],
-			tempHorizTiles = [];
+	function slice($source, horizontalTiles, verticalTiles){
 
-		if(!$.isEmptyObject(horizGap))
-			tempHorizTiles = sliceHorizontally($source);
+		if(verticalTiles.length>0)
+			sliceHorizontally();
 
-		if(!$.isEmptyObject(vertGap)){
-			if(tempHorizTiles.length > 0){
-				tempHorizTiles.forEach(function($source){
-					finalTiles = finalTiles.concat(sliceVertically($source));
-				});				
+		if(horizontalTiles.length>0)
+			sliceVertically();
+
+		function sliceHorizontally(){
+
+			var $newSource = null,
+				$currentRow = $source.parent("div[class*='row']");			
+
+			if($currentRow.find("div[class*='span']").length===1){				
+				$source.removeClass("initial");
+
+				verticalTiles.forEach(function(tile){
+					var $row = $currentRow.clone();
+
+					$row.find("div[class*='span']").height(tile.height);
+
+					if($newSource)
+						$newSource = $newSource.add($row);
+					else
+						$newSource = $row;
+				});
+
+				if($newSource){
+					$currentRow.replaceWith($newSource);
+					$source = $newSource;
+				}
 			}
-			else
-				finalTiles = sliceVertically($source);
-		}
-		else
-			finalTiles = tempHorizTiles;
+			else{
+				verticalTiles.forEach(function(tile){
+					var $row = $("<div class='row-fixed'>");
 
-		if(finalTiles.length > 0){
-			$source.remove();
-			finalTiles.forEach(function($newTile){
-				$newTile.prependTo($canvas);
-			});
-		}
+					$source.clone().height(tile.height).appendTo($row);
 
-		function sliceHorizontally($source){
-			var $topTile = clone($source),
-				$bottomTile = clone($source),
-				sourceTop = px2Float($source, "top"),
-				sourceLeft = px2Float($source, "left"),
-				sourceHeight = $source.height(),
-				sourceWidth = $source.width(),
-				topTileHeight = horizGap.start - sourceTop,
-				bottomTileHeight = sourceHeight - (horizGap.end - sourceTop);
+					if($newSource)
+						$newSource = $newSource.add($row);
+					else
+						$newSource = $row;
+				});
 
-			$topTile.css({
-				top: sourceTop,
-				left: sourceLeft,
-				height: topTileHeight,
-				width: sourceWidth
-			});
-
-			$bottomTile.css({
-				top: horizGap.end,
-				left: sourceLeft,
-				height: bottomTileHeight,
-				width: sourceWidth
-			});
-
-			return [$topTile, $bottomTile];
+				if($newSource)
+					$source.append($newSource);
+			}
 		}
 
-		function sliceVertically($source){
-			var $leftTile = clone($source),
-				$rightTile = clone($source),
-				sourceTop = px2Float($source, "top"),
-				sourceLeft = px2Float($source, "left"),
-				sourceHeight = $source.height(),
-				sourceWidth = $source.width(),
-				leftTileWidth = vertGap.start - sourceLeft,
-				rightTileWidth = sourceWidth - (vertGap.end - sourceLeft);
+		function sliceVertically(){
 
-			$leftTile.css({
-				top: sourceTop,
-				left: sourceLeft,
-				height: sourceHeight,
-				width: leftTileWidth
-			});
+			if($source.is("div[class*='span']:empty"))
+				sliceUpSpan($source);
+			else{
+				$source.find("div[class*='span']:empty").each(function(){
+					sliceUpSpan($(this));
+				});
+			}
 
-			$rightTile.css({
-				top: sourceTop,
-				left: vertGap.end,
-				height: sourceHeight,
-				width: rightTileWidth
-			});
+			function sliceUpSpan($source) {
+				var $newSource = null,
+					sourceHeight = $source.height();
 
-			return [$leftTile, $rightTile];
-		}
+				horizontalTiles.forEach(function(tile){
+					var $span =	$("<div>")
+									.addClass("span"+tile.type)
+									.attr({
+										"data-start-point": tile.start,
+										"data-span-type": tile.type
+									})
+									.height(sourceHeight);
 
-		function clone($element){
-			return $element.clone().removeClass("initial");
+					if($newSource)
+						$newSource = $newSource.add($span);
+					else
+						$newSource = $span;
+				});			
+
+				$source.replaceWith($newSource);
+			}
 		}
 	}
 
-	function exportToRealGrid(){
-		
+	function exportMarkup(){
+		var $exportGrid = $grid.clone(),
+			$exportHTML = "";
+
+		$exportGrid.find("div.initial").removeClass("initial");
+		$exportHTML = $.htmlClean($exportGrid.html(), {format:true})
+
+		$outputHTML.text($exportHTML);
+		hljs.highlightBlock($outputHTML[0]);
+
+		$outputWrapper.show();
 	}
 }
 
-TilingTool.CROSSHAIRS_THICKNESS = 9.047;
-TilingTool.COLUMN_UNIT = 54.359;
+TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS = 0;
+TilingTool.VERTICAL_CROSSHAIRS_THICKNESS = 0;
+TilingTool.COLUMN_UNIT = 0;
 TilingTool.SLICE_MODE = {
 	HORIZ: 1,
 	VERT: 2

@@ -1,193 +1,251 @@
-div.tilingtool {
-	display: block;
-	width: 802px;
-	margin: 0 auto;
+html, body {
+	margin: 0;
+	padding: 0;
 }
 
-	div.tilingtool form.paramgen {
-		margin-top: 1%;
-		margin-bottom: 3%
-	}
-
-		div.tilingtool form.paramgen label {
-			display: inline-block;
-			margin-right: 1%;
-		}
-
-		div.tilingtool form.paramgen input[type="button"]{
-			padding: 1%;
-		}
-
-	div.tilingtool div.canvas {
-		position: relative;
+	div#bg:before {
+		content: "";
+		position: fixed;
+		left: 0;
+		right: 0;
+		z-index: -1;	  
 		display: block;
-		background-color: white;
-		width: 752px;
-		margin-top: 50px;
-		margin-left: 50px;
+		width: 100%;
+		height: 100%;
+		background: url("tiles.jpg") repeat;
+		-webkit-filter: blur(5px);
+		-moz-filter: blur(5px);
+		-o-filter: blur(5px);
+		-ms-filter: blur(5px);
+		filter: blur(5px);
 	}
 
-		div.tilingtool div.canvas div.ruler {
-			position: absolute;
-			background-color: rgb(89, 89, 89);
+	div#bg {
+		width: 100%;
+		height: 100%;
+		background-color: rgba(37,32,53,0.7);
+	}
+
+	div.tilingtool {
+		display: block;
+		width: 802px;
+		margin: 0 auto;
+	}
+
+		div.tilingtool h1 {
+			margin-top: 0;
+			padding-top: 50px;
+			padding-bottom: 30px;
+			text-align: center;
 		}
 
-		div.tilingtool div.canvas div.ruler.horizontal {
-			left: 0;
-			top: -35px;
-			width: 100%;
-			height: 35px;
+		div.tilingtool form.paramgen {
+			margin-top: 20px;
 		}
 
-			div.tilingtool div.canvas div.ruler.horizontal div.row-fluid {
-				margin-bottom: 0;
-				height: 100%;
+			div.tilingtool form.paramgen > * {
+				margin-bottom: 30px;
 			}
 
-				div.tilingtool div.canvas div.ruler.horizontal div.row-fluid div.span1 {
+			div.tilingtool form.paramgen label {
+				display: inline-block;
+				margin-right: 1%;
+			}
+
+			div.tilingtool form.paramgen input[type="button"]{
+				padding: 1%;
+			}
+
+		div.tilingtool div.canvas {
+			position: relative;
+			display: block;
+			background-color: transparent;
+			width: 752px;
+			margin: 50px;
+			border: 1px solid white;
+		}
+
+			div.tilingtool div.canvas div.ruler {
+				position: absolute;				
+			}
+
+			div.tilingtool div.canvas div.ruler.horizontal {
+				left: -1px;
+				top: -36px;
+				width: 100%;
+				height: 35px;
+				border: 1px solid white;
+				border-bottom: 0;
+			}
+
+				div.tilingtool div.canvas div.ruler.horizontal div.row-fluid {
 					height: 100%;
 				}
 
-		div.tilingtool div.canvas div.ruler.vertical {
-			left: -50px;
-			top: 0;
-			width: 50px;
-			height: 100%;
-		}
+					div.tilingtool div.canvas div.ruler.horizontal div.row-fluid div.span1 {
+						height: 100%;
+						background: transparent;
+					}
 
-			div.tilingtool div.canvas div.ruler div.marker {
-				position: absolute;
-				display: block;
-				background-color: rgb(255,255,255);
-			}
-
-			div.tilingtool div.canvas div.ruler div.marker.active {
-				background-color: rgb(255,0,213);
-			}
-
-			div.tilingtool div.canvas div.ruler.horizontal div.marker {
-				width: 1px;
+			div.tilingtool div.canvas div.ruler.vertical {
+				left: -51px;
+				top: -1px;
+				width: 50px;
 				height: 100%;
-				top: 0;
-				-webkit-background-clip: padding-box; /* for Safari */
-				background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */				
-				border: 0 solid rgba(255,255,255,0.5);
+				border: 1px solid white;
+				border-right: 0;
 			}
 
-			div.tilingtool div.canvas div.ruler.horizontal div.marker.active {
-				border-color: rgba(255,0,213,0.5);
-			}
-
-			div.tilingtool div.canvas div.ruler.vertical div.marker {				
-				height: 1px;
-				right: 0;
-				text-align: center;
-			}
-
-			div.tilingtool div.canvas div.ruler.vertical div.marker.small {
-				width: 20%;
-			}
-
-			div.tilingtool div.canvas div.ruler.vertical div.marker.medium {
-				width: 50%;
-			}
-
-			div.tilingtool div.canvas div.ruler.vertical div.marker.large {
-				width: 100%;
-			}
-
-				div.tilingtool div.canvas div.ruler.vertical div.marker div.number {
-					color: rgb(255,255,255);
-				}
-
-				div.tilingtool div.canvas div.ruler.vertical div.marker div.number.active {
-					color: rgb(255,0,213);
-				}
-
-		div.tilingtool div.canvas div.tile {
-			position: absolute;
-			display: block;
-			background-color: rgb(46,46,46);
-			margin: 0;
-			padding: 0;
-			z-index: 1;
-		}
-
-		div.tilingtool div.canvas div.tile.initial {
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-		}
-		
-		div.tilingtool div.canvas div.crosshairs {
-			position: absolute;
-			display: table;
-			margin: 0;
-			padding: 0;
-			pointer-events:none;
-		}
-
-		div.tilingtool div.canvas div.crosshairs.horizontal {
-			left: 0;
-			width: 100%;
-			height: 9.047px;
-			z-index: 1000;
-		}
-
-		div.tilingtool div.canvas div.crosshairs.horizontal.active {
-			z-index: 1001;
-		}
-
-			div.tilingtool div.canvas div.crosshairs.horizontal div.column {
-				display: table-cell;
-			}
-
-				div.tilingtool div.canvas div.crosshairs.horizontal div.column div.cell {
+				div.tilingtool div.canvas div.ruler div.marker {
+					position: absolute;
 					display: block;
-					height: 1px;
-					-webkit-background-clip: padding-box; /* for Safari */
-					background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
+					background-color: rgb(255,255,255);
+				}
+
+				div.tilingtool div.canvas div.ruler div.marker.active {
 					background-color: rgb(0,255,255);
-					border-top: 4.523px solid rgba(0,255,255,0.5);
-					border-bottom: 4.523px solid rgba(0,255,255,0.5);
 				}
 
-				div.tilingtool div.canvas div.crosshairs.horizontal div.column.active div.cell {
+				div.tilingtool div.canvas div.ruler.active div.marker.active {
 					background-color: rgb(255,0,0);
-					border-top: 4.523px solid rgba(255,0,0,0.5);
-					border-bottom: 4.523px solid rgba(255,0,0,0.5);
 				}
 
+				div.tilingtool div.canvas div.ruler.horizontal div.marker {
+					width: 1px;
+					height: 100%;
+					top: 0;
+					-webkit-background-clip: padding-box; /* for Safari */
+					background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */				
+					border: 0 solid rgba(255,255,255,0.5);
+				}
+
+				div.tilingtool div.canvas div.ruler.horizontal div.marker.active {
+					border-color: rgba(0,255,255,0.5);
+				}
+
+				div.tilingtool div.canvas div.ruler.horizontal.active div.marker.active {
+					border-color: rgba(255,0,0,0.5);
+				}
+
+				div.tilingtool div.canvas div.ruler.vertical div.marker {				
+					height: 1px;
+					right: 0;
+					text-align: center;
+				}
+
+				div.tilingtool div.canvas div.ruler.vertical div.marker.small {
+					width: 20%;
+				}
+
+				div.tilingtool div.canvas div.ruler.vertical div.marker.medium {
+					width: 50%;
+				}
+
+				div.tilingtool div.canvas div.ruler.vertical div.marker.large {
+					width: 100%;
+				}
+
+					div.tilingtool div.canvas div.ruler.vertical div.marker div.number {
+						color: rgb(255,255,255);
+						cursor: default;
+						-webkit-user-select: none;
+						-moz-user-select: none;
+						-ms-user-select: none;
+						-o-user-select: none;
+						user-select: none; 
+					}
+
+					div.tilingtool div.canvas div.ruler.vertical div.marker div.number.active {
+						color: rgb(0,255,255);
+					}
+
+					div.tilingtool div.canvas div.ruler.vertical.active div.marker div.number.active {
+						color: rgb(255,0,0);
+					}
 			
-
-		div.tilingtool div.canvas div.crosshairs.vertical {
-			top: 0;
-			width: 9.047px;
-			height: 100%;		
-			z-index: 1000;
-		}
-
-		div.tilingtool div.canvas div.crosshairs.vertical.active {		
-			z-index: 1001;
-		}
-
-			div.tilingtool div.canvas div.crosshairs.vertical div.row {
-				display: table-row;
+			div.tilingtool div.canvas div.crosshairs {
+				position: absolute;
+				display: table;
+				margin: 0;
+				padding: 0;
+				pointer-events:none;
+				z-index: 1000;
 			}
 
-				div.tilingtool div.canvas div.crosshairs.vertical div.row div.cell {
+			div.tilingtool div.canvas div.crosshairs.horizontal {
+				left: 0;
+				width: 100%;			
+			}
+
+			div.tilingtool div.canvas div.crosshairs.vertical {
+				top: 0;
+				height: 100%;
+			}
+
+			div.tilingtool div.canvas div.crosshairs.active {
+				z-index: 1001;
+			}
+
+				div.tilingtool div.canvas div.crosshairs.horizontal div.column {
 					display: table-cell;
-					width: 1px;
-					-webkit-background-clip: padding-box; /* for Safari */
-					background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
-					background-color: rgb(0,255,255);
-					border-left: 4.523px solid rgba(0,255,255,0.5);
-					border-right: 4.523px solid rgba(0,255,255,0.5);
 				}
 
-				div.tilingtool div.canvas div.crosshairs.vertical div.row.active div.cell {
-					background-color: rgb(255,0,0);
-					border-left: 4.523px solid rgba(255,0,0,0.5);
-					border-right: 4.523px solid rgba(255,0,0,0.5);
+				div.tilingtool div.canvas div.crosshairs.vertical div.row {
+					display: table-row;
 				}
+
+					div.tilingtool div.canvas div.crosshairs div.cell {
+						-webkit-background-clip: padding-box; /* for Safari */
+						background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
+						background-color: rgb(0,255,255);
+						border: 0 solid rgba(0,255,255,0.5);
+					}
+
+					div.tilingtool div.canvas div.crosshairs div.active div.cell {
+						background-color: rgb(255,0,0);
+						border-color: rgba(255,0,0,0.5);
+					}
+
+					div.tilingtool div.canvas div.crosshairs.horizontal div.column div.cell {
+						display: block;
+						height: 1px;
+					}
+
+					div.tilingtool div.canvas div.crosshairs.vertical div.row div.cell {
+						display: table-cell;
+						width: 1px;
+					}
+
+			div.tilingtool div.canvas div.grid {
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
+
+				div.tilingtool div.canvas div.grid div[class*="span"]:empty {
+					background-color: rgba(20,20,20,0.8);
+				}
+
+				div.tilingtool div.canvas div.grid div.span12.initial {
+					height: 500px;
+				}
+
+		div.tilingtool div.output {
+			display: none;
+		}
+
+			div.tilingtool div.output pre.html {
+				border: 1px solid white;
+			}
+
+			/* Overriding the themee */
+			div.tilingtool div.output pre.html.hljs {
+				background-color: rgba(20,20,20,0.8);
+			}
+
+			div.tilingtool div.output pre.html.hljs::selection,
+			div.tilingtool div.output pre.html.hljs::-moz-selection,
+			div.tilingtool div.output pre.html.hljs span::selection
+			div.tilingtool div.output pre.html.hljs span::-moz-selection {
+				background-color: rgba(37,32,53,0.5);
+			}

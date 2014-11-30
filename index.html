@@ -2,54 +2,67 @@
 <html>
 	<head>
 		<title>Tiling Tool</title>
-		<link rel='stylesheet' media='all' type='text/css' href='tilingtool.css'/>
-		<link rel='stylesheet' media='all' type='text/css' href='grid.css'/>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/hybrid.min.css">
+		<link rel='stylesheet' media='all' type='text/css' href='tilingtool.css'>
+		<link rel='stylesheet' media='all' type='text/css' href='elements.css'>
+		<link rel='stylesheet' media='all' type='text/css' href='grid.css'>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="http://cdn.craig.is/js/mousetrap/mousetrap.min.js?9d308"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+		<script src="jquery.htmlClean.min.js"></script>
 		<script src="tilingtool.js"></script>
 	</head>	
 	<body>
-		<div id="content" class="tilingtool">
-			<h1>Tiling Tool</h1>
-			<form class="paramgen">
-				<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
-				<button name="export">Export</button>
-			</form>
-			<div class="canvas">
-				<div class="horizontal ruler">
-					<div class="row-fluid">
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
-						<div class="span1"></div>
+		<div id="bg">
+			<div id="content" class="tilingtool">
+				<h1>Tiling Tool</h1>
+				<form class="paramgen">
+					<label>Canvas height: <input type="text" class="autostart" name="canvas-height" value="500"></label>
+					<div class="canvas">
+						<div class="horizontal ruler">
+							<div class="row-fluid">
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+								<div class="span1"></div>
+							</div>
+						</div>
+						<div class="vertical ruler"></div>
+						<div class="crosshairs horizontal" data-position-index="">
+							<div class="left column"><div class="cell"></div></div>
+							<div class="middle column"><div class="cell"></div></div>
+							<div class="right column"><div class="cell"></div></div>
+						</div>
+						<div class="crosshairs vertical" data-position-index="">
+							<div class="top row"><div class="cell"></div></div>
+							<div class="middle row"><div class="cell"></div></div>
+							<div class="bottom row"><div class="cell"></div></div>
+						</div>
+						<div class="grid">
+							<div class="row-fluid">
+								<div class="span12 initial" data-start-point="0" data-span-type="12"></div>
+							</div>
+						</div>				
 					</div>
+					<button name="export" class="gradient autostart">Export</button>
+				</form>
+				<div class="output">
+					<pre class="html"></pre>
 				</div>
-				<div class="vertical ruler"></div>
-				<div class="tile initial"></div>
-				<div class="crosshairs horizontal">
-					<div class="left column"><div class="cell"></div></div>
-					<div class="middle column"><div class="cell"></div></div>
-					<div class="right column"><div class="cell"></div></div>
-				</div>
-				<div class="crosshairs vertical">
-					<div class="top row"><div class="cell"></div></div>
-					<div class="middle row"><div class="cell"></div></div>
-					<div class="bottom row"><div class="cell"></div></div>
-				</div>
+				<script>
+					$(document).ready(function () {
+						var tilingTool = new TilingTool();
+					});
+				</script>
 			</div>
-			<script>
-				$(document).ready(function () {
-					var tilingTool = new TilingTool();
-				});
-			</script>
 		</div>
 	</body>
 </html>
