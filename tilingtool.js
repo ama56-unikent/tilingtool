@@ -141,7 +141,7 @@ function TilingTool(){
 				top += step;
 			}
 
-			verticalSnap(height/2);
+			verticalSnap((height/2)-5);
 
 			function isEven(num) { return (num%2)===0; }
 			function isOdd(num) { return !isEven(num); }
@@ -307,11 +307,12 @@ function TilingTool(){
 		else
 			currentY += (5-remainder);
 
-		highlightMarker(currentY, $verticalRuler);
-
-		var top = currentY - (TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS/2);
+		/**
+		 * We add the 5 here so the ruler points to the middle marker. 
+		 */
+		highlightMarker(currentY+5, $verticalRuler);
 		
-		$horizCrosshairsLeg.css({top: top}).attr({"data-position-index":top});
+		$horizCrosshairsLeg.css({top: currentY}).attr({"data-position-index":currentY});
 	}
 
 	function highlightMarker(markerID, $ruler){
