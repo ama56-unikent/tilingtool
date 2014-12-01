@@ -25,7 +25,81 @@ function TilingTool(){
 		$currentMouseElement = $canvas,
 		possibleXpositions = [],
 		currentSliceMode = 0,
-		clipboardClient;
+		clipboardClient = null,
+		currentTileEditMode = 0;
+
+	this.turnOnSliceMode = function(){
+		$horizCrosshairsLeg.show();
+		$vertCrosshairsLeg.show();
+		$canvas.find("div.ruler div.marker.active").removeClass("disabled");
+		$canvas.find("div.ruler div.marker div.number.active").removeClass("disabled");
+
+		$canvas.mousemove(followMouse);
+
+		Mousetrap.bind("h",function(){
+			$horizCrosshairsLeg.addClass("active");
+			$verticalRuler.addClass("active");
+			currentSliceMode |= TilingTool.SLICE_MODE.HORIZ;
+			if($currentMouseElement.is("[class*='span']"))
+				highlightHorizontalCrosshairs();
+		},"keypress");
+
+		Mousetrap.bind("h",function(){
+			$horizCrosshairsLeg.removeClass("active");
+			$horizCrosshairsLegLeft.removeClass("active");
+			$horizCrosshairsLegRight.removeClass("active");
+			$horizCrosshairsLegMiddle.removeClass("active");
+			$verticalRuler.removeClass("active");
+			currentSliceMode &= ~TilingTool.SLICE_MODE.HORIZ;
+		},"keyup");
+
+		Mousetrap.bind("v",function(){
+			$vertCrosshairsLeg.addClass("active");
+			$horizontalRuler.addClass("active");
+			currentSliceMode |= TilingTool.SLICE_MODE.VERT;
+			if($currentMouseElement.is("[class*='span']"))
+				highlightVerticalCrosshairs();
+		},"keypress");
+
+		Mousetrap.bind("v",function(){
+			$vertCrosshairsLeg.removeClass("active");
+			$vertCrosshairsLegTop.removeClass("active");
+			$vertCrosshairsLegMiddle.removeClass("active");
+			$vertCrosshairsLegBottom.removeClass("active");
+			$horizontalRuler.removeClass("active");
+			currentSliceMode &= ~TilingTool.SLICE_MODE.VERT;
+		},"keyup");
+
+		$canvas.mouseout(function(){
+			$vertCrosshairsLegTop.removeClass("active");
+			$vertCrosshairsLegMiddle.removeClass("active");
+			$vertCrosshairsLegBottom.removeClass("active");
+			$horizCrosshairsLegLeft.removeClass("active");
+			$horizCrosshairsLegRight.removeClass("active");
+			$horizCrosshairsLegMiddle.removeClass("active");
+			$horizontalRuler.removeClass("active");
+			$horizontalRuler.removeClass("active");
+		});
+
+		$canvas.click(detectSliceMode);
+	};
+
+	this.turnOffSliceMode = function(){
+		Mousetrap.unbind(["h","v"]);
+		$canvas.off();
+		$horizCrosshairsLeg.hide();
+		$vertCrosshairsLeg.hide();
+		$canvas.find("div.ruler div.marker.active").addClass("disabled");
+		$canvas.find("div.ruler div.marker div.number.active").addClass("disabled");
+	};
+
+	this.turnOnResizeMode = function(){
+
+	};
+
+	this.turnOffResizeMode = function(){
+		
+	};
 
 	init();
 
@@ -160,60 +234,12 @@ function TilingTool(){
 		$paramGenChildren.filter("button").click(function(event){
 			paramAction($(this).attr("name"),$(this).val());
 		});
-
-		$canvas.mousemove(followMouse);
-
-		Mousetrap.bind("h",function(){
-			$horizCrosshairsLeg.addClass("active");
-			$verticalRuler.addClass("active");
-			currentSliceMode |= TilingTool.SLICE_MODE.HORIZ;
-			if($currentMouseElement.is("[class*='span']"))
-				highlightHorizontalCrosshairs();
-		},"keypress");
-
-		Mousetrap.bind("h",function(){
-			$horizCrosshairsLeg.removeClass("active");
-			$horizCrosshairsLegLeft.removeClass("active");
-			$horizCrosshairsLegRight.removeClass("active");
-			$horizCrosshairsLegMiddle.removeClass("active");
-			$verticalRuler.removeClass("active");
-			currentSliceMode &= ~TilingTool.SLICE_MODE.HORIZ;
-		},"keyup");
-
-		Mousetrap.bind("v",function(){
-			$vertCrosshairsLeg.addClass("active");
-			$horizontalRuler.addClass("active");
-			currentSliceMode |= TilingTool.SLICE_MODE.VERT;
-			if($currentMouseElement.is("[class*='span']"))
-				highlightVerticalCrosshairs();
-		},"keypress");
-
-		Mousetrap.bind("v",function(){
-			$vertCrosshairsLeg.removeClass("active");
-			$vertCrosshairsLegTop.removeClass("active");
-			$vertCrosshairsLegMiddle.removeClass("active");
-			$vertCrosshairsLegBottom.removeClass("active");
-			$horizontalRuler.removeClass("active");
-			currentSliceMode &= ~TilingTool.SLICE_MODE.VERT;
-		},"keyup");
-
-		$canvas.mouseout(function(){
-			$vertCrosshairsLegTop.removeClass("active");
-			$vertCrosshairsLegMiddle.removeClass("active");
-			$vertCrosshairsLegBottom.removeClass("active");
-			$horizCrosshairsLegLeft.removeClass("active");
-			$horizCrosshairsLegRight.removeClass("active");
-			$horizCrosshairsLegMiddle.removeClass("active");
-			$horizontalRuler.removeClass("active");
-			$horizontalRuler.removeClass("active");
-		});
-
-		$canvas.click(detectSliceMode);
 	}
 
 	function finalize(){
 		exportMarkup();
 		clipboardClient = new ZeroClipboard($codeCopier[0]);
+		self.turnOffSliceMode();
 	}
 
 	function paramAction(name, value){
@@ -227,6 +253,27 @@ function TilingTool(){
 				else if(value==="close")
 					closeCodeView();
 				break;
+			case "create-tile":
+			case "resize-tile":
+				switchTileEditMode(name, value);
+				break;
+		}
+	}
+
+	function switchTileEditMode(name, command){
+		var $button = $("button[name='"+name+"']");
+		if($button.hasClass("active")){
+			$button.removeClass("active");
+			self["turnOff"+command].call(self);
+		}
+		else{
+			var $opposite = $("button[name='"+$button.attr("data-nonparallel")+"']");
+			if($opposite.hasClass("active")){
+				$opposite.removeClass("active");
+				self["turnOff"+$opposite.val()].call(self);
+			}
+			self["turnOn"+command].call(self);
+			$button.addClass("active");
 		}
 	}
 
@@ -556,7 +603,6 @@ function TilingTool(){
 		$codeViewSwitch.html("Code View &#10548;");
 		$outputWrapper.removeClass("min-height-opened");
 	}
-
 }
 
 TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS = 0;

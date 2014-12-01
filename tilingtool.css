@@ -133,6 +133,12 @@ body {
 					background-color: rgb(255,0,0);
 				}
 
+				div.tilingtool div.canvas div.ruler div.marker.active.disabled,
+				div.tilingtool div.canvas div.ruler.active div.marker.active.disabled
+				{
+					background-color: rgb(255,255,255);
+				}
+
 				div.tilingtool div.canvas div.ruler.horizontal div.marker {
 					width: 1px;
 					height: 100%;
@@ -148,6 +154,11 @@ body {
 
 				div.tilingtool div.canvas div.ruler.horizontal.active div.marker.active {
 					border-color: rgba(255,0,0,0.5);
+				}
+
+				div.tilingtool div.canvas div.ruler.horizontal div.marker.active.disabled,
+				div.tilingtool div.canvas div.ruler.horizontal.active div.marker.active.disabled {
+					border-color: rgba(255,255,255,0.5);
 				}
 
 				div.tilingtool div.canvas div.ruler.vertical div.marker {				
@@ -184,6 +195,11 @@ body {
 
 					div.tilingtool div.canvas div.ruler.vertical.active div.marker div.number.active {
 						color: rgb(255,0,0);
+					}
+
+					div.tilingtool div.canvas div.ruler.vertical div.marker div.number.active.disabled,
+					div.tilingtool div.canvas div.ruler.vertical.active div.marker div.number.active.disabled {
+						color: rgb(255,255,255);
 					}
 			
 			div.tilingtool div.canvas div.crosshairs {
@@ -288,7 +304,7 @@ body {
 			}
 
 			div.tilingtool div.toolbar button[name="create-tile"]:hover,
-			div.tilingtool div.toolbar button[name="create-tile"]:active {
+			div.tilingtool div.toolbar button[name="create-tile"].active {
 				background-image: url("scalpel-hover.png");
 			}
 
@@ -297,7 +313,7 @@ body {
 			}
 
 			div.tilingtool div.toolbar button[name="resize-tile"]:hover,
-			div.tilingtool div.toolbar button[name="create-tile"]:active {
+			div.tilingtool div.toolbar button[name="resize-tile"].active {
 				background-image: url("resize-hover.png");
 			}
 
