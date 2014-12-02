@@ -85,7 +85,16 @@ body {
 			background-color: transparent;
 			width: 752px;
 			margin: 50px;
+			margin-bottom: 100px;
 			border: 1px solid white;
+		}
+
+		div.tilingtool div.canvas.vertical-resize-cursor {
+			cursor: n-resize;
+		}
+
+		div.tilingtool div.canvas.horizontal-resize-cursor {
+			cursor: w-resize;
 		}
 
 			div.tilingtool div.canvas div.ruler {
@@ -268,6 +277,16 @@ body {
 				div.tilingtool div.canvas div.grid div.span12.initial {
 					height: 500px;
 				}
+
+			div.tilingtool div.canvas div.bottom-expander {
+				display: none;
+				position: absolute;
+				height: 10px;
+				bottom: -5px;
+				left: 0;
+				right: 0;
+				z-index: 2000;
+			}
 
 		div.tilingtool div.toolbar {
 			position: fixed;

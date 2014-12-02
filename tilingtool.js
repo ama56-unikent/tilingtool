@@ -20,13 +20,21 @@ function TilingTool(){
 		$vertCrosshairsLegTop = $vertCrosshairsLeg.find("div.top"),
 		$vertCrosshairsLegMiddle = $vertCrosshairsLeg.find("div.middle"),
 		$vertCrosshairsLegBottom = $vertCrosshairsLeg.find("div.bottom"),
+		$bottomExpander = $canvas.find("div.bottom-expander"),
 		$markerTemplate = $("<div class='marker'>"),
 		$numberTemplate = $("<div class='number'>"),
 		$currentMouseElement = $canvas,
 		possibleXpositions = [],
 		currentSliceMode = 0,
 		clipboardClient = null,
-		currentTileEditMode = 0;
+		currentTileEditMode = 0,
+		canvasOffset = $canvas.offset(),
+		cursorRelationships = {
+			"grid": "vertical-resize-cursor",
+			"span": "vertical-resize-cursor",
+			"row-fluid": "horizontal-resize-cursor",
+			"row-fixed": "horizontal-resize-cursor"			
+		};
 
 	this.turnOnSliceMode = function(){
 		$horizCrosshairsLeg.show();
@@ -94,11 +102,40 @@ function TilingTool(){
 	};
 
 	this.turnOnResizeMode = function(){
+		$bottomExpander.show();
 
+		$grid.mousemove(function(event){
+			var $element = $(event.target);
+			if($element.is("div[class*='span']:empty")){
+				$canvas.removeClass("vertical-resize-cursor");
+				$canvas.removeClass("horizontal-resize-cursor");
+			}
+			else{
+				for(var className in cursorRelationships){
+					if($element.is("div[class*='"+className+"']")){
+						$canvas.addClass(cursorRelationships[className]);
+						break;
+					}
+				}
+			}
+		});
+
+		$grid.mouseout(function(event){
+			$canvas.removeClass("vertical-resize-cursor");
+			$canvas.removeClass("horizontal-resize-cursor");
+		});
+
+		$bottomExpander.hover(function(event){
+			$canvas.addClass("vertical-resize-cursor");
+		},function(event){
+			$canvas.removeClass("vertical-resize-cursor");
+		});
 	};
 
-	this.turnOffResizeMode = function(){
-		
+	this.turnOffResizeMode = function(){		
+		$bottomExpander.off();
+		$grid.off();
+		$bottomExpander.hide();
 	};
 
 	init();
@@ -280,13 +317,12 @@ function TilingTool(){
 	function followMouse(event){
 		event.stopPropagation();
 
-		var offset = $canvas.offset(),
-			xLimit = $canvas.innerWidth() - TilingTool.VERTICAL_CROSSHAIRS_THICKNESS,
+		var xLimit = $canvas.innerWidth() - TilingTool.VERTICAL_CROSSHAIRS_THICKNESS,
 			yLimit = $canvas.innerHeight() - TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS,
 			xNormalizationFactor = (TilingTool.VERTICAL_CROSSHAIRS_THICKNESS-1)/2,
 			yNormalizationFactor = (TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS-1)/2;
-			newX = event.pageX - offset.left - xNormalizationFactor,
-			newY = event.pageY - offset.top - yNormalizationFactor;
+			newX = event.pageX - canvasOffset.left - xNormalizationFactor,
+			newY = event.pageY - canvasOffset.top - yNormalizationFactor;
 
 		if(newX<0)
 			newX = 0;
@@ -612,6 +648,7 @@ TilingTool.SLICE_MODE = {
 	HORIZ: 1,
 	VERT: 2
 };
+TilingTool.RESIZE_ACTIVATION_THRESHOLD = 5;
 
 /*\
 |*|
