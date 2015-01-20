@@ -12,6 +12,18 @@ body {
 	overflow: auto;
 }
 
+/** Generic **/
+
+.vertical-resize-cursor {
+	cursor: n-resize;
+}
+
+.horizontal-resize-cursor {
+	cursor: w-resize;
+}
+
+/** Specific **/
+
 	div#bg:before {
 		content: "";
 		position: fixed;
@@ -89,13 +101,14 @@ body {
 			border: 1px solid white;
 		}
 
-		div.tilingtool div.canvas.vertical-resize-cursor {
-			cursor: n-resize;
-		}
-
-		div.tilingtool div.canvas.horizontal-resize-cursor {
-			cursor: w-resize;
-		}
+		div.tilingtool div.canvas,
+		div.tilingtool div.canvas * {
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}		
 
 			div.tilingtool div.canvas div.ruler {
 				position: absolute;				
@@ -190,12 +203,7 @@ body {
 
 					div.tilingtool div.canvas div.ruler.vertical div.marker div.number {
 						color: rgb(255,255,255);
-						cursor: default;
-						-webkit-user-select: none;
-						-moz-user-select: none;
-						-ms-user-select: none;
-						-o-user-select: none;
-						user-select: none; 
+						cursor: default; 
 					}
 
 					div.tilingtool div.canvas div.ruler.vertical div.marker div.number.active {
@@ -286,6 +294,17 @@ body {
 				left: 0;
 				right: 0;
 				z-index: 2000;
+			}
+
+			div.tilingtool div.canvas div.resize-marker {
+				display: none;
+				position: absolute;
+				height: 1px;
+				width: 1px;
+				top: 0;
+				left: 0;
+				z-index: 3000;
+				background-color: rgba(211, 22, 4, 0.7);
 			}
 
 		div.tilingtool div.toolbar {
@@ -410,7 +429,7 @@ body {
 				text-align: left;
 			}
 
-			/* Overriding the themee */
+			/* Overriding the theme */
 			div.tilingtool div.output pre.html.hljs {
 				background-color: transparent;
 			}

@@ -21,11 +21,21 @@ function TilingTool(){
 		$vertCrosshairsLegMiddle = $vertCrosshairsLeg.find("div.middle"),
 		$vertCrosshairsLegBottom = $vertCrosshairsLeg.find("div.bottom"),
 		$bottomExpander = $canvas.find("div.bottom-expander"),
+		$resizeMarker = $canvas.find("div.resize-marker"),
 		$markerTemplate = $("<div class='marker'>"),
 		$numberTemplate = $("<div class='number'>"),
-		$currentMouseElement = $canvas,
+		$currentMouseElement = $canvas,		
 		possibleXpositions = [],
 		currentSliceMode = 0,
+		currentResizeMode = {
+			$element: null,
+			elementType: "",
+			resizeType: ""
+		},
+		currentMousePosition = {
+			x: 0,
+			y: 0
+		},
 		clipboardClient = null,
 		currentTileEditMode = 0,
 		canvasOffset = $canvas.offset(),
@@ -105,14 +115,25 @@ function TilingTool(){
 		$bottomExpander.show();
 
 		$grid.mousemove(function(event){
+			followMouse(event, true);
 			var $element = $(event.target);
 			if($element.is("div[class*='span']:empty")){
+				currentResizeMode = {
+					$element: null,
+					elementType: "",
+					resizeType: ""
+				};
 				$canvas.removeClass("vertical-resize-cursor");
 				$canvas.removeClass("horizontal-resize-cursor");
 			}
 			else{
 				for(var className in cursorRelationships){
 					if($element.is("div[class*='"+className+"']")){
+						currentResizeMode = {
+							$element: $element,
+							elementType: className,
+							resizeType: cursorRelationships[className]
+						};
 						$canvas.addClass(cursorRelationships[className]);
 						break;
 					}
@@ -121,8 +142,20 @@ function TilingTool(){
 		});
 
 		$grid.mouseout(function(event){
+			currentResizeMode = {
+				$element: null,
+				elementType: "",
+				resizeType: ""
+			};
 			$canvas.removeClass("vertical-resize-cursor");
 			$canvas.removeClass("horizontal-resize-cursor");
+		});
+
+		$grid.mousedown(function(event){
+			if(currentResizeMode.$element){
+				$("body").addClass(currentResizeMode.resizeType);
+				resize(event.target, $.extend(true, {}, currentMousePosition));
+			}
 		});
 
 		$bottomExpander.hover(function(event){
@@ -314,7 +347,7 @@ function TilingTool(){
 		}
 	}
 
-	function followMouse(event){
+	function followMouse(event, setCurrentXY){
 		event.stopPropagation();
 
 		var xLimit = $canvas.innerWidth() - TilingTool.VERTICAL_CROSSHAIRS_THICKNESS,
@@ -334,6 +367,15 @@ function TilingTool(){
 		else if(newY>yLimit)
 			newY = yLimit;
 
+		if(setCurrentXY){
+			currentMousePosition = {
+				x: horizontalSnap(newX, true),
+				y: verticalSnap(newY, true)
+			}
+			$grid.trigger("NewMousePosition");
+			return;
+		}
+
 		horizontalSnap(newX);
 		verticalSnap(newY);
 
@@ -349,7 +391,7 @@ function TilingTool(){
 		}
 	}
 
-	function horizontalSnap(currentX){
+	function horizontalSnap(currentX, returnVal){
 		var leastDiff;
 		for(var i=0 ; i<possibleXpositions.length; i++){
 			var xPosition = possibleXpositions[i];
@@ -369,13 +411,16 @@ function TilingTool(){
 			}
 		}
 
+		if(returnVal)
+			return currentX;
+
 		// We pass i instead of i-1 because the markers are numbered starting from 1
 		highlightMarker(i, $horizontalRuler);
 
 		$vertCrosshairsLeg.css({left: currentX}).attr({"data-position-index":i});
 	}
 
-	function verticalSnap(currentY){
+	function verticalSnap(currentY, returnVal){
 
 		var remainder;
 		currentY = Math.round(currentY);
@@ -389,6 +434,9 @@ function TilingTool(){
 			currentY -= remainder;
 		else
 			currentY += (5-remainder);
+
+		if(returnVal)
+			return currentY+5;
 
 		/**
 		 * We add the 5 here so the ruler points to the middle marker. 
@@ -638,6 +686,115 @@ function TilingTool(){
 		$codeViewSwitch.val("open");
 		$codeViewSwitch.html("Code View &#10548;");
 		$outputWrapper.removeClass("min-height-opened");
+	}
+
+	function resize(parentElement, clickedPosition){
+		var $parentElement = $(parentElement);
+		if(!$parentElement.is(currentResizeMode.$element))
+			return;
+
+		positionResizeMarker(undefined, true, clickedPosition);
+		$resizeMarker.show();
+
+		$grid.on("NewMousePosition", positionResizeMarker);
+
+		$(document).mouseup(function(){
+			$grid.off("NewMousePosition");
+			$resizeMarker.hide();
+			$("body").removeClass("horizontal-resize-cursor");
+			$("body").removeClass("vertical-resize-cursor");
+		});
+	}
+
+	function positionResizeMarker(event, initial, clickedPosition){
+		switch(currentResizeMode.elementType){
+			case "grid":
+			case "span":
+				if(initial)
+					initialVerticalResizeMarker(clickedPosition);
+				break;
+			case "row-fluid":
+			case "row-fixed":
+				if(initial)
+					initialHorizontalResizeMarker(clickedPosition);
+				break;
+		}
+	}
+
+	function initialVerticalResizeMarker(clickedPosition){
+		var resizing = {
+				$top: null,
+				$bottom: null
+			},
+			lastDistance = -1,
+			y = clickedPosition.y;
+
+		currentResizeMode.$element.children().each(function(index, element){
+			var $child = $(element),
+				bottom = $child.position().top + $child.height(),
+				bottomDist = Math.abs(y-bottom);
+
+			// First iteration
+			if(lastDistance===-1){
+		 		lastDistance = bottomDist;
+		 		resizing.$top = $child;
+			}
+			// Last iteration
+			else if(bottomDist>lastDistance){
+				resizing.$bottom = $child;
+				return false;
+			}
+			// Continue
+			else{
+				lastDistance = bottomDist;
+				resizing.$top = $child;
+			}
+		});
+
+		$resizeMarker.css({
+			height: px2Float(resizing.$top, "margin-bottom"),
+			width: currentResizeMode.$element.width(),
+			top: resizing.$top.position().top + resizing.$top.height(),
+			left: resizing.$top.position().left
+		});
+	}
+
+	function initialHorizontalResizeMarker(clickedPosition){
+		var resizing = {
+				$left: null,
+				$right: null
+			},
+			lastDistance = -1,
+			x = clickedPosition.x;
+
+		currentResizeMode.$element.children().each(function(index, element){
+			var $child = $(element),
+				right = $child.position().left + $child.width(),
+				rightDist = Math.abs(x-right);
+
+			// First iteration
+			if(lastDistance===-1){
+		 		lastDistance = rightDist;
+		 		resizing.$left = $child;
+			}
+			// Last iteration
+			else if(rightDist>lastDistance){
+				resizing.$right = $child;
+				return false;
+			}
+			// Continue
+			else{
+				lastDistance = rightDist;
+				resizing.$left = $child;
+			}
+		});
+
+		$resizeMarker.css({
+			height: currentResizeMode.$element.height(),
+			width: px2Float(resizing.$right, "margin-left"),
+			top: resizing.$right.position().top,
+			left: resizing.$right.position().left
+		});
 	}
 }
 
