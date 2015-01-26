@@ -849,12 +849,21 @@ function TilingTool(){
 		var resizeAmount = $resizeMarker.position().top - 
 									startResizePosition.top;
 
-		var topElements = findToBeVerticallyResized(
-				resizingParentElements.$top, "top"),
-			bottomElements = findToBeVerticallyResized(
-				resizingParentElements.$bottom, "bottom");
+		try
+		{
+			var topElements = findToBeVerticallyResized(
+					resizingParentElements.$top, "top", resizeAmount),
+				bottomElements = findToBeVerticallyResized(
+					resizingParentElements.$bottom, "bottom", resizeAmount);
+		}
+		catch(e){
+			if(e==="InvalidResizeException")
+				return;
+			else
+				throw e;
+		}
 
-		console.log(topElements, bottomElements);
+		finalizeVerticalResize(topElements, bottomElements, resizeAmount);
 	}
 
 	function calculateHorizontalResizer(){
@@ -865,23 +874,41 @@ function TilingTool(){
 		var resizeAmount = possibleXpositions.indexOf($resizeMarker.position().left) -
 							possibleXpositions.indexOf(startResizePosition.left);
 
-		var leftElements = findToBeHorizontallyResized(
-				resizingParentElements.$left, "left"),
+		try
+		{
+			var leftElements = findToBeHorizontallyResized(
+				resizingParentElements.$left, "left", resizeAmount),
 			rightElements = findToBeHorizontallyResized(
-				resizingParentElements.$right, "right");
+				resizingParentElements.$right, "right", resizeAmount);
+		}
+		catch(e){
+			if(e==="InvalidResizeException")
+				return;
+			else
+				throw e;				
+		}		
 
-		console.log(leftElements, rightElements);
+		finalizeHorizontalResize(leftElements, rightElements, resizeAmount);
 	}
 
-	function findToBeVerticallyResized($parent, side, selectedElements){
+	function findToBeVerticallyResized($parent, side, resizeAmount, selectedElements){
 		selectedElements = selectedElements || [];
 		
 		$parent.children("div[class^='span']").each(function(index, element){
 			var $span = $(element);
 
-			if($span.is(":empty"))
-				selectedElements.push($span);
-			else{
+			if(
+				(resizeAmount>0 && side==="bottom"
+				&& $span.height()-resizeAmount<30)
+				||
+				(resizeAmount<0 && side==="top"
+				&& $span.height()+resizeAmount<30)
+				)
+				throw "InvalidResizeException";
+
+			selectedElements.push($span);
+			
+			if(!$span.is(":empty")){
 				var whichChild = "";
 
 				if(side==="top")
@@ -891,7 +918,8 @@ function TilingTool(){
 
 				$span.children("div.row-fixed"+whichChild)
 					.each(function(index, element){
-						findToBeVerticallyResized($(element), side, selectedElements);
+						findToBeVerticallyResized($(element), side, 
+							resizeAmount, selectedElements);
 					});
 			}
 		});
@@ -899,8 +927,17 @@ function TilingTool(){
 		return selectedElements;
 	}
 
-	function findToBeHorizontallyResized($parent, side, selectedElements){
+	function findToBeHorizontallyResized($parent, side, resizeAmount, selectedElements){
 		selectedElements = selectedElements || [];
+
+		if(
+			(resizeAmount>0 && side==="right"
+			&& parseInt($parent.attr("data-span-type"))-resizeAmount<1)
+			||
+			(resizeAmount<0 && side==="left"
+			&& parseInt($parent.attr("data-span-type"))+resizeAmount<1)
+			)
+			throw "InvalidResizeException";
 
 		selectedElements.push($parent);
 
@@ -915,11 +952,65 @@ function TilingTool(){
 
 			$row.children("div[class^='span']"+whichChild)
 				.each(function(index, element){
-					findToBeHorizontallyResized($(element), side, selectedElements);
+					findToBeHorizontallyResized($(element), side, resizeAmount, selectedElements);
 				});
 		});
 
 		return selectedElements;
+	}
+
+	function finalizeVerticalResize(topElements, bottomElements, resizeAmount){
+
+		iterateElements(topElements, "top");
+		iterateElements(bottomElements, "bottom");
+		exportMarkup();
+
+		function iterateElements(elements, side){
+			elements.forEach(function($element){
+				if(side==="top")
+					$element.height($element.height()+resizeAmount);
+				else if(side==="bottom")
+					$element.height($element.height()-resizeAmount);
+			});			
+		}
+	}
+
+	function finalizeHorizontalResize(leftElements, rightElements, resizeAmount){
+		
+		iterateElements(leftElements, "left");
+		iterateElements(rightElements, "right");
+		exportMarkup();
+
+		function iterateElements(elements, side){
+			elements.forEach(function($element){
+				if(side==="left"){
+					var oldSpanType = parseInt($element.attr("data-span-type")),
+						newSpanType = oldSpanType + resizeAmount;
+
+					$element
+						.attr({
+							"data-span-type": newSpanType
+						})
+						.removeClass("span"+oldSpanType)
+						.addClass("span"+newSpanType);
+				}
+				else if(side==="right"){
+					var oldSpanType = parseInt($element.attr("data-span-type")),
+						newSpanType = oldSpanType - resizeAmount,
+						newSpanStartPoint = 
+							parseInt($element.attr("data-start-point")) 
+									+ resizeAmount;
+
+					$element
+						.attr({
+							"data-start-point": newSpanStartPoint,
+							"data-span-type": newSpanType
+						})
+						.removeClass("span"+oldSpanType)
+						.addClass("span"+newSpanType);
+				}
+			});			
+		}
 	}
 }
 
