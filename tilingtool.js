@@ -36,6 +36,8 @@ function TilingTool(){
 			x: 0,
 			y: 0
 		},
+		resizingParentElements = null,
+		startResizePosition = null,
 		clipboardClient = null,
 		currentTileEditMode = 0,
 		canvasOffset = $canvas.offset(),
@@ -118,22 +120,12 @@ function TilingTool(){
 			followMouse(event, true);
 			var $element = $(event.target);
 			if($element.is("div[class*='span']:empty")){
-				currentResizeMode = {
-					$element: null,
-					elementType: "",
-					resizeType: ""
-				};
 				$canvas.removeClass("vertical-resize-cursor");
 				$canvas.removeClass("horizontal-resize-cursor");
 			}
 			else{
 				for(var className in cursorRelationships){
 					if($element.is("div[class*='"+className+"']")){
-						currentResizeMode = {
-							$element: $element,
-							elementType: className,
-							resizeType: cursorRelationships[className]
-						};
 						$canvas.addClass(cursorRelationships[className]);
 						break;
 					}
@@ -142,19 +134,27 @@ function TilingTool(){
 		});
 
 		$grid.mouseout(function(event){
-			currentResizeMode = {
-				$element: null,
-				elementType: "",
-				resizeType: ""
-			};
 			$canvas.removeClass("vertical-resize-cursor");
 			$canvas.removeClass("horizontal-resize-cursor");
 		});
 
 		$grid.mousedown(function(event){
-			if(currentResizeMode.$element){
-				$("body").addClass(currentResizeMode.resizeType);
-				resize(event.target, $.extend(true, {}, currentMousePosition));
+			var $element = $(event.target);
+			if(!$element.is("div[class*='span']:empty")){
+				for(var className in cursorRelationships){
+					if($element.is("div[class*='"+className+"']")){
+						currentResizeMode = {
+							$element: $element,
+							elementType: className,
+							resizeType: cursorRelationships[className]
+						};
+						break;
+					}
+				}
+				if(currentResizeMode.$element){
+					$("body").addClass(currentResizeMode.resizeType);
+					resize(event.target, $.extend(true, {}, currentMousePosition));
+				}
 			}
 		});
 
@@ -700,6 +700,23 @@ function TilingTool(){
 
 		$(document).mouseup(function(){
 			$grid.off("NewMousePosition");
+			switch(currentResizeMode.elementType){
+				case "grid":
+				case "span":
+					calculateVerticalResizer();
+					break;
+				case "row-fluid":
+				case "row-fixed":
+					calculateHorizontalResizer();
+					break;
+			}			
+			startResizePosition = null;
+			resizingParentElements = null;
+			currentResizeMode = {
+				$element: null,
+				elementType: "",
+				resizeType: ""
+			};
 			$resizeMarker.hide();
 			$("body").removeClass("horizontal-resize-cursor");
 			$("body").removeClass("vertical-resize-cursor");
@@ -712,21 +729,25 @@ function TilingTool(){
 			case "span":
 				if(initial)
 					initialVerticalResizeMarker(clickedPosition);
+				else
+					moveVerticalResizeMarker();
 				break;
 			case "row-fluid":
 			case "row-fixed":
 				if(initial)
 					initialHorizontalResizeMarker(clickedPosition);
+				else
+					moveHorizontalResizeMarker();
 				break;
 		}
 	}
 
 	function initialVerticalResizeMarker(clickedPosition){
-		var resizing = {
-				$top: null,
-				$bottom: null
-			},
-			lastDistance = -1,
+		resizingParentElements = {
+			$top: null,
+			$bottom: null
+		};
+		var	lastDistance = -1,
 			y = clickedPosition.y;
 
 		currentResizeMode.$element.children().each(function(index, element){
@@ -737,34 +758,40 @@ function TilingTool(){
 			// First iteration
 			if(lastDistance===-1){
 		 		lastDistance = bottomDist;
-		 		resizing.$top = $child;
+		 		resizingParentElements.$top = $child;
 			}
 			// Last iteration
 			else if(bottomDist>lastDistance){
-				resizing.$bottom = $child;
+				resizingParentElements.$bottom = $child;
 				return false;
 			}
 			// Continue
 			else{
 				lastDistance = bottomDist;
-				resizing.$top = $child;
+				resizingParentElements.$top = $child;
 			}
 		});
 
+		startResizePosition = {
+			top: resizingParentElements.$top.position().top + 
+					resizingParentElements.$top.height(),
+			left: resizingParentElements.$top.position().left
+		};
+
 		$resizeMarker.css({
-			height: px2Float(resizing.$top, "margin-bottom"),
+			height: px2Float(resizingParentElements.$top, "margin-bottom"),
 			width: currentResizeMode.$element.width(),
-			top: resizing.$top.position().top + resizing.$top.height(),
-			left: resizing.$top.position().left
+			top:  startResizePosition.top,
+			left: startResizePosition.left
 		});
 	}
 
 	function initialHorizontalResizeMarker(clickedPosition){
-		var resizing = {
-				$left: null,
-				$right: null
-			},
-			lastDistance = -1,
+		resizingParentElements = {
+			$left: null,
+			$right: null
+		};
+		var lastDistance = -1,
 			x = clickedPosition.x;
 
 		currentResizeMode.$element.children().each(function(index, element){
@@ -775,26 +802,124 @@ function TilingTool(){
 			// First iteration
 			if(lastDistance===-1){
 		 		lastDistance = rightDist;
-		 		resizing.$left = $child;
+		 		resizingParentElements.$left = $child;
 			}
 			// Last iteration
 			else if(rightDist>lastDistance){
-				resizing.$right = $child;
+				resizingParentElements.$right = $child;
 				return false;
 			}
 			// Continue
 			else{
 				lastDistance = rightDist;
-				resizing.$left = $child;
+				resizingParentElements.$left = $child;
 			}
 		});
 
+		startResizePosition = {
+			top: resizingParentElements.$right.position().top,
+			left: horizontalSnap(
+				resizingParentElements.$right.position().left, true)
+		};
+
 		$resizeMarker.css({
 			height: currentResizeMode.$element.height(),
-			width: px2Float(resizing.$right, "margin-left"),
-			top: resizing.$right.position().top,
-			left: resizing.$right.position().left
+			width: px2Float(resizingParentElements.$right, "margin-left"),
+			top:  startResizePosition.top,
+			left: startResizePosition.left
 		});
+	}
+
+	function moveVerticalResizeMarker(){
+		$resizeMarker.css({
+			top: currentMousePosition.y
+		});
+	}
+
+	function moveHorizontalResizeMarker(){
+		$resizeMarker.css({
+			left: currentMousePosition.x
+		});
+	}
+
+	function calculateVerticalResizer(){
+		if($resizeMarker.position().top === startResizePosition.top)
+			return;
+
+		var resizeAmount = $resizeMarker.position().top - 
+									startResizePosition.top;
+
+		var topElements = findToBeVerticallyResized(
+				resizingParentElements.$top, "top"),
+			bottomElements = findToBeVerticallyResized(
+				resizingParentElements.$bottom, "bottom");
+
+		console.log(topElements, bottomElements);
+	}
+
+	function calculateHorizontalResizer(){
+		if($resizeMarker.position().left === 
+			startResizePosition.left)
+			return;
+
+		var resizeAmount = possibleXpositions.indexOf($resizeMarker.position().left) -
+							possibleXpositions.indexOf(startResizePosition.left);
+
+		var leftElements = findToBeHorizontallyResized(
+				resizingParentElements.$left, "left"),
+			rightElements = findToBeHorizontallyResized(
+				resizingParentElements.$right, "right");
+
+		console.log(leftElements, rightElements);
+	}
+
+	function findToBeVerticallyResized($parent, side, selectedElements){
+		selectedElements = selectedElements || [];
+		
+		$parent.children("div[class^='span']").each(function(index, element){
+			var $span = $(element);
+
+			if($span.is(":empty"))
+				selectedElements.push($span);
+			else{
+				var whichChild = "";
+
+				if(side==="top")
+					whichChild = ":last-child";
+				else if(side==="bottom")
+					whichChild = ":first-child";
+
+				$span.children("div.row-fixed"+whichChild)
+					.each(function(index, element){
+						findToBeVerticallyResized($(element), side, selectedElements);
+					});
+			}
+		});
+
+		return selectedElements;
+	}
+
+	function findToBeHorizontallyResized($parent, side, selectedElements){
+		selectedElements = selectedElements || [];
+
+		selectedElements.push($parent);
+
+		$parent.children("div.row-fixed").each(function(index, element){
+			var $row = $(element),
+				whichChild = "";
+
+			if(side==="left")
+				whichChild = ":last-child";
+			else if(side==="right")
+				whichChild = ":first-child";
+
+			$row.children("div[class^='span']"+whichChild)
+				.each(function(index, element){
+					findToBeHorizontallyResized($(element), side, selectedElements);
+				});
+		});
+
+		return selectedElements;
 	}
 }
 
