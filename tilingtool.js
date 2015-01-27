@@ -548,6 +548,9 @@ function TilingTool(){
 				verticalTiles[1] = {};
 				verticalTiles[1].height = currentHeight - verticalTiles[0].height 
 											- TilingTool.HORIZONTAL_CROSSHAIRS_THICKNESS;
+
+				if(verticalTiles[0].height<30 || verticalTiles[1].height<30)
+					return;
 			}
 
 			if((TilingTool.SLICE_MODE.VERT & currentSliceMode) === 
@@ -555,6 +558,10 @@ function TilingTool(){
 				var currentStartPoint = parseInt($span.attr("data-start-point")),
 					currentType = parseInt($span.attr("data-span-type")),
 					slicePoint = parseInt($vertCrosshairsLeg.attr("data-position-index"));
+
+				if(currentStartPoint === slicePoint 
+					|| currentStartPoint + currentType === slicePoint)
+					return;
 
 				horizontalTiles[0] = {};
 				horizontalTiles[0].start = currentStartPoint;
