@@ -75,7 +75,7 @@ body {
 		}
 
 		div.tilingtool form.paramgen {
-			padding-top: 20px;
+			padding-top: 80px;
 		}
 
 			div.tilingtool form.paramgen > * {
@@ -96,6 +96,7 @@ body {
 			display: block;
 			background-color: transparent;
 			width: 752px;
+			height: 500px;
 			margin: 50px;
 			margin-bottom: 100px;
 			border: 1px solid white;
@@ -389,6 +390,11 @@ body {
 				padding: 2px 6px;
 				cursor: pointer;
 				letter-spacing: 5px;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				-o-user-select: none;
+				user-select: none;
 			}
 
 			div.tilingtool div.output button[name="code-view-switch"]:hover {

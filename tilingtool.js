@@ -36,6 +36,10 @@ function TilingTool(){
 			x: 0,
 			y: 0
 		},
+		overflowMousePosition = {
+			x: 0,
+			y: 0
+		},
 		resizingParentElements = null,
 		startResizePosition = null,
 		clipboardClient = null,
@@ -45,7 +49,8 @@ function TilingTool(){
 			"grid": "vertical-resize-cursor",
 			"span": "vertical-resize-cursor",
 			"row-fluid": "horizontal-resize-cursor",
-			"row-fixed": "horizontal-resize-cursor"			
+			"row-fixed": "horizontal-resize-cursor",
+			"bottom-expander": "vertical-resize-cursor"			
 		};
 
 	this.turnOnSliceMode = function(){
@@ -116,7 +121,7 @@ function TilingTool(){
 	this.turnOnResizeMode = function(){
 		$bottomExpander.show();
 
-		$grid.mousemove(function(event){
+		$canvas.mousemove(function(event){
 			followMouse(event, true);
 			var $element = $(event.target);
 			if($element.is("div[class*='span']:empty")){
@@ -133,12 +138,20 @@ function TilingTool(){
 			}
 		});
 
-		$grid.mouseout(function(event){
+		$(document).mousemove(function(event){
+			overflowMousePosition = {
+				x: event.pageX,
+				y: event.pageY
+			};
+			$grid.trigger("OverflowMousePosition");
+		});
+
+		$canvas.mouseout(function(event){
 			$canvas.removeClass("vertical-resize-cursor");
 			$canvas.removeClass("horizontal-resize-cursor");
 		});
 
-		$grid.mousedown(function(event){
+		$canvas.mousedown(function(event){
 			var $element = $(event.target);
 			if(!$element.is("div[class*='span']:empty")){
 				for(var className in cursorRelationships){
@@ -157,17 +170,11 @@ function TilingTool(){
 				}
 			}
 		});
-
-		$bottomExpander.hover(function(event){
-			$canvas.addClass("vertical-resize-cursor");
-		},function(event){
-			$canvas.removeClass("vertical-resize-cursor");
-		});
 	};
 
-	this.turnOffResizeMode = function(){		
-		$bottomExpander.off();
-		$grid.off();
+	this.turnOffResizeMode = function(){
+		$canvas.off();
+		$(document).off("mousemove");
 		$bottomExpander.hide();
 	};
 
@@ -314,9 +321,6 @@ function TilingTool(){
 
 	function paramAction(name, value){
 		switch(name){
-			case "canvas-height":
-				$canvas.css({height: value});
-				break;
 			case "code-view-switch":
 				if(value==="open")
 					openCodeView();
@@ -704,9 +708,11 @@ function TilingTool(){
 		$resizeMarker.show();
 
 		$grid.on("NewMousePosition", positionResizeMarker);
+		$grid.on("OverflowMousePosition", positionExpansionMarker);
 
 		$(document).mouseup(function(){
 			$grid.off("NewMousePosition");
+			$grid.off("OverflowMousePosition");
 			switch(currentResizeMode.elementType){
 				case "grid":
 				case "span":
@@ -724,10 +730,28 @@ function TilingTool(){
 				elementType: "",
 				resizeType: ""
 			};
+			$canvas.css({
+				"margin-bottom": 100
+			});
 			$resizeMarker.hide();
+			$canvas.append($resizeMarker);
 			$("body").removeClass("horizontal-resize-cursor");
 			$("body").removeClass("vertical-resize-cursor");
 		});
+	}
+
+	function positionExpansionMarker(event){
+		if(currentResizeMode.elementType==="bottom-expander"){
+			var expansionAmount = overflowMousePosition.y - 
+				canvasOffset.top - $canvas.height();
+			$("body").scrollTop(expansionAmount);
+			$canvas.css({
+				"margin-bottom": 100 + expansionAmount
+			});
+			$resizeMarker.css({
+				top: overflowMousePosition.y
+			});
+		}
 	}
 
 	function positionResizeMarker(event, initial, clickedPosition){
@@ -746,7 +770,31 @@ function TilingTool(){
 				else
 					moveHorizontalResizeMarker();
 				break;
+			case "bottom-expander":
+				if(initial)
+					initialGridExpanderMarker();
+				break;
 		}
+	}
+
+	function initialGridExpanderMarker(){
+		resizingParentElements = {
+			$top: $grid.children("div.row-fluid:last-child"),
+			$bottom: null
+		};
+
+		startResizePosition = {
+			top: resizingParentElements.$top.position().top + 
+					resizingParentElements.$top.height(),
+			left: resizingParentElements.$top.position().left
+		};
+		$("body").append($resizeMarker);
+		$resizeMarker.css({
+			height: 1,
+			width: currentResizeMode.$element.width(),
+			top:  canvasOffset.top + $canvas.height(),
+			left: canvasOffset.left
+		});
 	}
 
 	function initialVerticalResizeMarker(clickedPosition){
