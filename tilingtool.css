@@ -312,7 +312,7 @@ body {
 			top: 0;
 			left: 0;
 			bottom: 0;
-			height: 600px;
+			height: 290px;
 			width: 60px;
 			margin: auto 0;
 			z-index: 2000;
@@ -354,6 +354,36 @@ body {
 			div.tilingtool div.toolbar button[name="resize-tile"].active {
 				background-image: url("resize-hover.png");
 			}
+
+			div.tilingtool div.toolbar button[name="help"] {
+				background-image: url("question-normal.png");
+			}
+
+			div.tilingtool div.toolbar button[name="help"]:hover,
+			div.tilingtool div.toolbar button[name="help"].active {
+				background-image: url("question-hover.png");
+			}
+
+		div.tilingtool div.information {
+			display: none;
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			height: 400px;
+			width: 300px;
+			margin: auto 0;
+			z-index: 2000;
+			background-color: rgba(20,20,20,0.8);
+			border: 1px solid white;
+			border-right: 0;
+			overflow: auto;
+			padding: 10px 20px;
+		}
+
+		div.tilingtool div.information.active {
+			display: block;
+		}
 
 		div.tilingtool div.output {
 			position: fixed;

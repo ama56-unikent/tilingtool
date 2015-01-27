@@ -327,6 +327,23 @@ function TilingTool(){
 			case "resize-tile":
 				switchTileEditMode(name, value);
 				break;
+			case "help":
+				switchHelp();
+				break;	
+		}
+	}
+
+	function switchHelp(){
+		var $helpButton = $("button[name='help']"),
+			$infoPanel = $("div.information");
+
+		if($helpButton.hasClass("active")){
+			$helpButton.removeClass("active");
+			$infoPanel.removeClass("active");
+		}
+		else{
+			$helpButton.addClass("active");
+			$infoPanel.addClass("active");
 		}
 	}
 

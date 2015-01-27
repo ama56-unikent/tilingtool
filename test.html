@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 	<head>
-		<title>Tiling Tool</title>
+		<title>Tiles</title>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/hybrid.min.css">
 		<link rel='stylesheet' media='all' type='text/css' href='tilingtool.css'>
 		<link rel='stylesheet' media='all' type='text/css' href='elements.css'>
@@ -55,13 +55,23 @@
 								<div class="span2" data-start-point="0" data-span-type="2" style="height: 315px;"></div><div class="span10" data-start-point="2" data-span-type="10" style="height: 315px;"><div class="row-fixed"><div class="span2" data-start-point="2" data-span-type="2" style="height: 165px;"></div><div class="span2" data-start-point="4" data-span-type="2" style="height: 165px;"></div><div class="span2" data-start-point="6" data-span-type="2" style="height: 165px;"></div><div class="span2" data-start-point="8" data-span-type="2" style="height: 165px;"></div><div class="span2" data-start-point="10" data-span-type="2" style="height: 165px;"></div></div><div class="row-fixed"><div class="span3" data-start-point="2" data-span-type="3" style="height: 65px;"></div><div class="span4" data-start-point="5" data-span-type="4" style="height: 65px;"></div><div class="span3" data-start-point="9" data-span-type="3" style="height: 65px;"></div></div><div class="row-fixed"><div class="span5" data-start-point="2" data-span-type="5" style="height: 65px;"></div><div class="span5" data-start-point="7" data-span-type="5" style="height: 65px;"></div></div></div>
 							</div>						
 						</div>
-						<div class="bottom-expander"></div>
+						<!--<div class="bottom-expander"></div>-->
 						<div class="resize-marker"></div>
 					</div>
 				<div class="toolbar">
 					<button name="create-tile" title="Slicer" data-nonparallel="resize-tile" value="SliceMode"></button>
 					<button name="resize-tile" title="Resizer" data-nonparallel="create-tile" value="ResizeMode"></button>
-				</div>	
+					<button name="help" title="Help" value="Help"></button>
+				</div>
+				<div class="information">
+					<div class="help">
+						 <h2>How to use</h2>
+						 <p>Use the Slicer to create tiles. Adjust the crosshairs using the mouse. When ready to slice, hold the H key and click the left mouse button to slice the canvas horizontally or hold V to slice it vertically. You can also hold both keys simultaneously to perform a double slice.</p>
+						 <p>Use the Resizer to resize existing tiles. Hover over any of the margin areas for the resize cursor to appear; then, hold the left mouse button and drag your mouse to adjust the tile. You can do this both vertically and horizontally.</p>
+						 <p>When happy with your grid, click on Code View and then copy the markup.</p>
+						 <p>Have fun tiling! &#9786;</p>
+					</div>
+				</div>
 				<div class="output">
 					<button name="code-view-switch" value="open">
 						Code View &#10548;
